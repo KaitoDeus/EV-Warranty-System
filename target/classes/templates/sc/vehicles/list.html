@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::content}, pageTitle='Vehicles')}">
+
+<body>
+    <div th:fragment="content">
+        <!-- Search & Actions -->
+        <div class="d-flex justify-between align-center mb-3">
+            <form th:action="@{/sc/vehicles}" method="get" class="search-bar">
+                <input type="text" name="search" th:value="${search}" class="form-control"
+                    placeholder="Search by VIN, model, or make...">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+            <a th:href="@{/sc/vehicles/new}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Register Vehicle
+            </a>
+        </div>
+
+        <!-- Vehicles Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>VIN</th>
+                        <th>Make / Model</th>
+                        <th>Year</th>
+                        <th>Customer</th>
+                        <th>Warranty Status</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="vehicle : ${vehicles.content}">
+                        <td>
+                            <a th:href="@{/sc/vehicles/{id}(id=${vehicle.id})}" th:text="${vehicle.vin}">VIN</a>
+                        </td>
+                        <td th:text="${vehicle.make + ' ' + vehicle.model}">Make Model</td>
+                        <td th:text="${vehicle.year}">Year</td>
+                        <td th:text="${vehicle.customer?.fullName ?: 'N/A'}">Customer</td>
+                        <td>
+                            <span th:if="${vehicle.underWarranty}" class="badge badge-success">Under Warranty</span>
+                            <span th:unless="${vehicle.underWarranty}" class="badge badge-warning">Expired</span>
+                        </td>
+                        <td>
+                            <span class="badge" th:classappend="${'status-' + vehicle.status.name().toLowerCase()}"
+                                th:text="${vehicle.status}">Status</span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a th:href="@{/sc/vehicles/{id}(id=${vehicle.id})}" class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/sc/vehicles/{id}/edit(id=${vehicle.id})}"
+                                    class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${vehicles.content.isEmpty()}">
+                        <td colspan="7" class="text-center text-muted">No vehicles found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" th:if="${vehicles.totalPages > 1}">
+            <a th:if="${vehicles.hasPrevious()}"
+                th:href="@{/sc/vehicles(page=${vehicles.number - 1}, search=${search})}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <span th:each="i : ${#numbers.sequence(0, vehicles.totalPages - 1)}"
+                th:class="${i == vehicles.number ? 'current' : ''}"
+                th:if="${i == 0 or i == vehicles.totalPages - 1 or (i >= vehicles.number - 2 and i <= vehicles.number + 2)}">
+                <a th:unless="${i == vehicles.number}" th:href="@{/sc/vehicles(page=${i}, search=${search})}"
+                    th:text="${i + 1}">1</a>
+                <span th:if="${i == vehicles.number}" th:text="${i + 1}">1</span>
+            </span>
+            <a th:if="${vehicles.hasNext()}" th:href="@{/sc/vehicles(page=${vehicles.number + 1}, search=${search})}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

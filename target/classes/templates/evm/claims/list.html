@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: html(content=~{::content}, pageTitle='Claims Review')}">
+
+<body>
+    <div th:fragment="content">
+        <div class="table-container">
+            <div class="table-header"><span class="table-title">Pending Claims for Review</span></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Claim #</th>
+                        <th>Vehicle</th>
+                        <th>Service Center</th>
+                        <th>Description</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="claim : ${claims.content}">
+                        <td><a th:href="@{/evm/claims/{id}(id=${claim.id})}" th:text="${claim.claimNumber}">WC123</a>
+                        </td>
+                        <td th:text="${claim.vehicle.vin}">VIN</td>
+                        <td th:text="${claim.serviceCenter ?: 'N/A'}">SC</td>
+                        <td th:text="${#strings.abbreviate(claim.failureDescription, 40)}">Desc</td>
+                        <td
+                            th:text="${claim.submittedAt != null ? #temporals.format(claim.submittedAt, 'MMM dd, yyyy') : 'N/A'}">
+                            Date</td>
+                        <td><a th:href="@{/evm/claims/{id}(id=${claim.id})}" class="btn btn-sm btn-primary"><i
+                                    class="fas fa-clipboard-check"></i> Review</a></td>
+                    </tr>
+                    <tr th:if="${claims.content.isEmpty()}">
+                        <td colspan="6" class="text-center text-muted">No pending claims</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

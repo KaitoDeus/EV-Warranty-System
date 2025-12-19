@@ -1,0 +1,81 @@
+package com.oem.evwarranty.controller;
+
+import com.oem.evwarranty.model.Inventory;
+import com.oem.evwarranty.model.User;
+import com.oem.evwarranty.service.InventoryService;
+import com.oem.evwarranty.service.PartService;
+import com.oem.evwarranty.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.List;
+
+/**
+ * Controller for Inventory management (Service Center).
+ */
+@Controller
+@RequestMapping("/sc/inventory")
+public class InventoryController {
+
+    private final InventoryService inventoryService;
+    private final PartService partService;
+    private final UserService userService;
+
+    public InventoryController(InventoryService inventoryService,
+            PartService partService,
+            UserService userService) {
+        this.inventoryService = inventoryService;
+        this.partService = partService;
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public String list(Model model, Authentication auth) {
+        User user = userService.findByUsername(auth.getName()).orElse(null);
+        List<Inventory> inventory;
+
+        if (user != null && user.getServiceCenter() != null) {
+            inventory = inventoryService.findByServiceCenter(user.getServiceCenter());
+            model.addAttribute("lowStockItems",
+                    inventoryService.findLowStockItemsByServiceCenter(user.getServiceCenter()));
+        } else {
+            inventory = inventoryService.findAll();
+            model.addAttribute("lowStockItems", inventoryService.findLowStockItems());
+        }
+
+        model.addAttribute("inventory", inventory);
+        model.addAttribute("parts", partService.findAllActive());
+        return "sc/inventory/list";
+    }
+
+    @PostMapping("/add")
+    public String addStock(@RequestParam Long partId,
+            @RequestParam int quantity,
+            Authentication auth,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User user = userService.findByUsername(auth.getName()).orElse(null);
+            String serviceCenter = user != null ? user.getServiceCenter() : "DEFAULT";
+            inventoryService.createOrUpdateInventory(partId, serviceCenter, quantity);
+            redirectAttributes.addFlashAttribute("success", "Stock added successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/sc/inventory";
+    }
+
+    @PostMapping("/{id}/adjust")
+    public String adjustStock(@PathVariable Long id,
+            @RequestParam int adjustment,
+            RedirectAttributes redirectAttributes) {
+        try {
+            inventoryService.adjustStock(id, adjustment);
+            redirectAttributes.addFlashAttribute("success", "Stock adjusted successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/sc/inventory";
+    }
+}

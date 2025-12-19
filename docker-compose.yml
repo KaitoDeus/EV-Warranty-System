@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: evwarranty-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: evwarranty
+      MYSQL_USER: evwarranty
+      MYSQL_PASSWORD: evwarranty123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - evwarranty-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Spring Boot Backend
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: evwarranty-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: evwarranty
+      MYSQL_USER: evwarranty
+      MYSQL_PASSWORD: evwarranty123
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - evwarranty-network
+    restart: unless-stopped
+
+networks:
+  evwarranty-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

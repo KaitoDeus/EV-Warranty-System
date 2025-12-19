@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: html(content=~{::content}, pageTitle='Admin Dashboard')}">
+
+<body>
+    <div th:fragment="content">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Vehicles</h3>
+                    <div class="stat-value" th:text="${stats.totalVehicles}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Customers</h3>
+                    <div class="stat-value" th:text="${stats.totalCustomers}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-file-invoice"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Pending Claims</h3>
+                    <div class="stat-value" th:text="${stats.pendingClaims}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon info">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Active Campaigns</h3>
+                    <div class="stat-value" th:text="${stats.activeCampaigns}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Completed Claims</h3>
+                    <div class="stat-value" th:text="${stats.completedClaims}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Low Stock Items</h3>
+                    <div class="stat-value" th:text="${stats.lowStockItems}">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Quick Actions</h3>
+            </div>
+            <div class="btn-group" style="flex-wrap: wrap;">
+                <a th:href="@{/admin/users}" class="btn btn-primary">
+                    <i class="fas fa-user-cog"></i> Manage Users
+                </a>
+                <a th:href="@{/evm/claims}" class="btn btn-secondary">
+                    <i class="fas fa-clipboard-check"></i> Review Claims
+                </a>
+                <a th:href="@{/evm/campaigns}" class="btn btn-secondary">
+                    <i class="fas fa-bullhorn"></i> Service Campaigns
+                </a>
+                <a th:href="@{/evm/parts}" class="btn btn-secondary">
+                    <i class="fas fa-cogs"></i> Parts Catalog
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

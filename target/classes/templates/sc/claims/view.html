@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: html(content=~{::content}, pageTitle='Claim Details')}">
+
+<body>
+    <div th:fragment="content">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-file-invoice"></i> <span
+                        th:text="${claim.claimNumber}">WC123</span></h3>
+                <span class="badge" th:classappend="${'status-' + claim.status.name().toLowerCase().replace('_', '-')}"
+                    th:text="${claim.status}">Status</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label>Vehicle</label>
+                    <div><a th:href="@{/sc/vehicles/{id}(id=${claim.vehicle.id})}"
+                            th:text="${claim.vehicle.vin}">VIN</a> - <span
+                            th:text="${claim.vehicle.make + ' ' + claim.vehicle.model}">Make Model</span></div>
+                </div>
+                <div class="form-group"><label>Mileage at Claim</label>
+                    <div th:text="${claim.mileageAtClaim ?: 'N/A'}">Mileage</div>
+                </div>
+            </div>
+
+            <div class="form-group"><label>Failure Description</label>
+                <div th:text="${claim.failureDescription}">Description</div>
+            </div>
+            <div class="form-group" th:if="${claim.diagnosisNotes}"><label>Diagnosis Notes</label>
+                <div th:text="${claim.diagnosisNotes}">Notes</div>
+            </div>
+            <div class="form-group" th:if="${claim.repairDescription}"><label>Repair Description</label>
+                <div th:text="${claim.repairDescription}">Repair</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label>Submitted By</label>
+                    <div th:text="${claim.submittedBy?.fullName ?: 'N/A'}">User</div>
+                </div>
+                <div class="form-group"><label>Technician</label>
+                    <div th:text="${claim.technician?.fullName ?: 'Not Assigned'}">Tech</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions based on status -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">Actions</h3>
+            </div>
+            <div class="btn-group" style="flex-wrap: wrap;">
+                <form th:if="${claim.status.name() == 'DRAFT'}" th:action="@{/sc/claims/{id}/submit(id=${claim.id})}"
+                    method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit for
+                        Review</button>
+                </form>
+                <form th:if="${claim.status.name() == 'APPROVED'}"
+                    th:action="@{/sc/claims/{id}/complete(id=${claim.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Mark Complete</button>
+                </form>
+                <div th:if="${claim.status.name() == 'APPROVED' and !claim.technician}" class="mb-2">
+                    <form th:action="@{/sc/claims/{id}/assign(id=${claim.id})}" method="post" class="d-flex gap-1">
+                        <select name="technicianId" class="form-control" style="width: auto;" required>
+                            <option value="">Assign Technician</option>
+                            <option th:each="tech : ${technicians}" th:value="${tech.id}" th:text="${tech.fullName}">
+                                Tech</option>
+                        </select>
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-user-plus"></i> Assign</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <a th:href="@{/sc/claims}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+</body>
+
+</html>

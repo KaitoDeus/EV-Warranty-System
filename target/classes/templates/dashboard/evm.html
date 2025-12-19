@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: html(content=~{::content}, pageTitle='EVM Dashboard')}">
+
+<body>
+    <div th:fragment="content">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Pending Review</h3>
+                    <div class="stat-value" th:text="${stats.pendingClaims}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Approved Claims</h3>
+                    <div class="stat-value" th:text="${stats.approvedClaims}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon info">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Active Campaigns</h3>
+                    <div class="stat-value" th:text="${stats.activeCampaigns}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Parts</h3>
+                    <div class="stat-value" th:text="${stats.totalParts}">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Quick Actions</h3>
+            </div>
+            <div class="btn-group" style="flex-wrap: wrap;">
+                <a th:href="@{/evm/claims}" class="btn btn-primary">
+                    <i class="fas fa-clipboard-check"></i> Review Claims
+                </a>
+                <a th:href="@{/evm/campaigns/new}" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> New Campaign
+                </a>
+                <a th:href="@{/evm/parts/new}" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> Add Part
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

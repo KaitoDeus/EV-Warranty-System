@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: html(content=~{::content}, pageTitle='Service Center Dashboard')}">
+
+<body>
+    <div th:fragment="content">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Vehicles</h3>
+                    <div class="stat-value" th:text="${stats.totalVehicles}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Pending Claims</h3>
+                    <div class="stat-value" th:text="${stats.pendingClaims}">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon info">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>In Progress</h3>
+                    <div class="stat-value" th:text="${stats.inProgressClaims != null ? stats.inProgressClaims : 0}">0
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Low Stock</h3>
+                    <div class="stat-value" th:text="${stats.lowStockItems}">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Quick Actions</h3>
+            </div>
+            <div class="btn-group" style="flex-wrap: wrap;">
+                <a th:href="@{/sc/vehicles/new}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Register Vehicle
+                </a>
+                <a th:href="@{/sc/claims/new}" class="btn btn-secondary">
+                    <i class="fas fa-file-invoice"></i> New Claim
+                </a>
+                <a th:href="@{/sc/customers/new}" class="btn btn-secondary">
+                    <i class="fas fa-user-plus"></i> Add Customer
+                </a>
+                <a th:href="@{/sc/inventory}" class="btn btn-secondary">
+                    <i class="fas fa-boxes"></i> Inventory
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

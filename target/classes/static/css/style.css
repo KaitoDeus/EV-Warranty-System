@@ -47,6 +47,34 @@
 
     /* Sidebar */
     --sidebar-width: 260px;
+    --bg-sidebar: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+    --bg-sidebar-submenu: rgba(0, 0, 0, 0.3);
+    --border-sidebar: rgba(255, 255, 255, 0.05);
+    --bg-sidebar-header: rgba(0, 0, 0, 0.2);
+    --shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] {
+    --bg-dark: #f1f5f9;
+    --bg-darker: #e2e8f0;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-input: #ffffff;
+
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+
+    --border-color: #cbd5e1;
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+
+    --bg-sidebar: #ffffff;
+    --bg-sidebar-submenu: #f8fafc;
+    --border-sidebar: #cbd5e1;
+    --bg-sidebar-header: rgba(0, 0, 0, 0.02);
+    --shadow-sidebar: 1px 0 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Reset & Base */
@@ -92,20 +120,20 @@ a:hover {
 /* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
-    background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-sidebar);
     display: flex;
     flex-direction: column;
     position: fixed;
     height: 100vh;
     z-index: 100;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-sidebar);
 }
 
 .sidebar-header {
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border-sidebar);
+    background: var(--bg-sidebar-header);
     backdrop-filter: blur(10px);
 }
 
@@ -210,7 +238,7 @@ a.nav-item.active i {
 /* Submenu Styling */
 /* Submenu Styling */
 .sidebar-nav .nav-submenu {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--bg-sidebar-submenu);
     margin: 0.25rem 0.75rem 0.5rem;
     border-radius: 8px;
     padding: 0.5rem 0;
@@ -506,6 +534,7 @@ tr:last-child td {
 .btn-secondary:hover {
     background: var(--bg-card-hover);
     border-color: var(--primary);
+    color: var(--primary);
 }
 
 .btn-success {

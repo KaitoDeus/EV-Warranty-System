@@ -9,7 +9,47 @@ document.addEventListener('DOMContentLoaded', function () {
     initSearchDebounce();
     initFormValidation();
     initSidebarToggle();
+    initTheme();
 });
+
+/**
+ * Theme Management
+ */
+function initTheme() {
+    // Check for saved theme preference or system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    
+    // Default to dark if no preference (as per original design)
+    const currentTheme = savedTheme || 'dark'; // explicit default
+    
+    // Apply theme
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon(currentTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('theme-icon');
+    if (icon) {
+        // If theme is light, show moon (to switch to dark), else sun
+        if (theme === 'light') {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        } else {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+    }
+}
 
 /**
  * Toast Notifications

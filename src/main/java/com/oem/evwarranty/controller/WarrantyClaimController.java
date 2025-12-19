@@ -20,7 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * Controller for Warranty Claims (Service Center).
  */
 @Controller
-@RequestMapping("/sc/warranty-claims")
+@RequestMapping("/sc/claims")
 public class WarrantyClaimController {
 
     private final WarrantyClaimService claimService;
@@ -90,7 +90,7 @@ public class WarrantyClaimController {
             model.addAttribute("vehicles", vehicleService.findAll());
             return "sc/claims/form";
         }
-        return "redirect:/sc/warranty-claims";
+        return "redirect:/sc/claims";
     }
 
     @GetMapping("/{id}")
@@ -125,7 +125,7 @@ public class WarrantyClaimController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/sc/warranty-claims/" + id;
+        return "redirect:/sc/claims/" + id;
     }
 
     @PostMapping("/{id}/submit")
@@ -136,7 +136,7 @@ public class WarrantyClaimController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/sc/warranty-claims/" + id;
+        return "redirect:/sc/claims/" + id;
     }
 
     @PostMapping("/{id}/assign")
@@ -149,7 +149,7 @@ public class WarrantyClaimController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/sc/warranty-claims/" + id;
+        return "redirect:/sc/claims/" + id;
     }
 
     @PostMapping("/{id}/complete")
@@ -160,6 +160,6 @@ public class WarrantyClaimController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/sc/warranty-claims/" + id;
+        return "redirect:/sc/claims/" + id;
     }
 }

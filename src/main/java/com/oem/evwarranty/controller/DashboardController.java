@@ -35,6 +35,9 @@ public class DashboardController {
 
         // Determine which dashboard to show based on role
         if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            model.addAttribute("claimStats", reportService.getClaimStatsByStatus());
+            model.addAttribute("campaignStats", reportService.getCampaignStatsByStatus());
+            model.addAttribute("vehicleStats", reportService.getVehicleStatsByStatus());
             return "dashboard/admin";
         } else if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EVM_STAFF"))) {
             return "dashboard/evm";

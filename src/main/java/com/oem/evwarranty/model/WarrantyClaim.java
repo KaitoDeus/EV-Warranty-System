@@ -127,6 +127,7 @@ public class WarrantyClaim {
         DRAFT,
         SUBMITTED,
         UNDER_REVIEW,
+        PENDING_APPROVAL, // Added to support legacy data
         APPROVED,
         REJECTED,
         IN_PROGRESS,

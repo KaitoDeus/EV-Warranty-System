@@ -41,16 +41,28 @@ public class WarrantyClaimController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
             Authentication auth) {
+
         User user = userService.findByUsername(auth.getName()).orElse(null);
         Page<WarrantyClaim> claims;
 
-        if (user != null && user.getServiceCenter() != null) {
-            claims = claimService.findByServiceCenter(
-                    user.getServiceCenter(),
-                    PageRequest.of(page, size, Sort.by("createdAt").descending()));
-        } else {
+        // Determine user role for data access
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        boolean isEvmStaff = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_EVM_STAFF"));
+
+        if (isAdmin || isEvmStaff) {
+            // Admin and Manufacturers see ALL claims
             claims = claimService.searchClaims(
                     search, PageRequest.of(page, size, Sort.by("createdAt").descending()));
+        } else {
+            // Service Center Staff only see their center's claims
+            if (user != null && user.getServiceCenter() != null) {
+                claims = claimService.findByServiceCenter(
+                        user.getServiceCenter(),
+                        PageRequest.of(page, size, Sort.by("createdAt").descending()));
+            } else {
+                // If user has no service center assigned, show empty list (or handle error)
+                claims = Page.empty(PageRequest.of(page, size));
+            }
         }
 
         model.addAttribute("claims", claims);

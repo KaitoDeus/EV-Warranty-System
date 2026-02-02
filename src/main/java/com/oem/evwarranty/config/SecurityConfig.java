@@ -56,6 +56,12 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/error").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
 
+                        // Swagger API Docs
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        // REST API endpoints (require authentication)
+                        .requestMatchers("/api/v1/**").authenticated()
+
                         // Service Center routes (SC_STAFF and SC_TECHNICIAN)
                         .requestMatchers("/sc/**").hasAnyRole("SC_STAFF", "SC_TECHNICIAN", "ADMIN")
 

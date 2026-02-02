@@ -110,4 +110,15 @@ public class ReportService {
         }
         return stats;
     }
+
+    /**
+     * Get vehicle statistics by status
+     */
+    public Map<String, Long> getVehicleStatsByStatus() {
+        Map<String, Long> stats = new HashMap<>();
+        for (Vehicle.VehicleStatus status : Vehicle.VehicleStatus.values()) {
+            stats.put(status.name(), vehicleRepository.countByStatus(status));
+        }
+        return stats;
+    }
 }

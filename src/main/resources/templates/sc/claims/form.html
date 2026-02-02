@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout :: html(content=~{::content}, pageTitle='New Warranty Claim')}">
+    th:replace="~{layout :: html(content=~{::content}, pageTitle='Tạo yêu cầu bảo hành')}">
 
 <body>
     <div th:fragment="content">
         <div class="card">
-            <form th:action="@{/sc/claims}" method="post" th:object="${claim}">
+            <form th:action="@{${claim.id != null ? '/sc/claims/' + claim.id : '/sc/claims'}}" method="post" th:object="${claim}">
                 <div class="form-group">
-                    <label for="vehicleId">Vehicle *</label>
+                    <label for="vehicleId">Xe *</label>
                     <select id="vehicleId" name="vehicleId" class="form-control" required>
-                        <option value="">-- Select Vehicle --</option>
+                        <option value="">-- Chọn xe --</option>
                         <option th:each="vehicle : ${vehicles}" th:value="${vehicle.id}"
                             th:text="${vehicle.vin + ' - ' + vehicle.make + ' ' + vehicle.model}">Vehicle</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="failureDescription">Failure Description *</label>
+                    <label for="failureDescription">Mô tả lỗi *</label>
                     <textarea id="failureDescription" th:field="*{failureDescription}" class="form-control" rows="4"
-                        required placeholder="Describe the issue in detail..."></textarea>
+                        required placeholder="Mô tả chi tiết vấn đề..."></textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="mileageAtClaim">Mileage at Claim</label>
+                        <label for="mileageAtClaim">Số ODO khi báo lỗi</label>
                         <input type="number" id="mileageAtClaim" th:field="*{mileageAtClaim}" class="form-control"
                             min="0">
                     </div>
                     <div class="form-group">
-                        <label for="laborHours">Estimated Labor Hours</label>
+                        <label for="laborHours">Giờ công ước tính</label>
                         <input type="number" id="laborHours" th:field="*{laborHours}" class="form-control" step="0.5"
                             min="0">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="diagnosisNotes">Diagnosis Notes</label>
+                    <label for="diagnosisNotes">Ghi chú chẩn đoán</label>
                     <textarea id="diagnosisNotes" th:field="*{diagnosisNotes}" class="form-control" rows="3"
-                        placeholder="Initial diagnosis..."></textarea>
+                        placeholder="Chẩn đoán ban đầu..."></textarea>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create Claim</button>
-                    <a th:href="@{/sc/claims}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Tạo yêu cầu</button>
+                    <a th:href="@{/sc/claims}" class="btn btn-secondary">Hủy</a>
                 </div>
             </form>
         </div>

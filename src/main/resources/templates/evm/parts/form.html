@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout :: html(content=~{::content}, pageTitle=${part.id != null ? 'Edit Part' : 'Add Part'})}">
+    th:replace="~{layout :: html(content=~{::content}, pageTitle=${part.id != null ? 'Cập nhật phụ tùng' : 'Thêm phụ tùng'})}">
 
 <body>
     <div th:fragment="content">
@@ -8,30 +8,30 @@
             <form th:action="${part.id != null ? '/evm/parts/' + part.id : '/evm/parts'}" method="post"
                 th:object="${part}">
                 <div class="form-row">
-                    <div class="form-group"><label>Part Number *</label><input type="text" th:field="*{partNumber}"
+                    <div class="form-group"><label>Mã phụ tùng *</label><input type="text" th:field="*{partNumber}"
                             class="form-control" required th:readonly="${part.id != null}"></div>
-                    <div class="form-group"><label>Name *</label><input type="text" th:field="*{name}"
+                    <div class="form-group"><label>Tên phụ tùng *</label><input type="text" th:field="*{name}"
                             class="form-control" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Category *</label><select th:field="*{category}" class="form-control"
+                    <div class="form-group"><label>Danh mục *</label><select th:field="*{category}" class="form-control"
                             required>
                             <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}">Cat</option>
                         </select></div>
-                    <div class="form-group"><label>Price ($)</label><input type="number" th:field="*{price}"
-                            class="form-control" step="0.01" min="0"></div>
+                    <div class="form-group"><label>Đơn giá (VND)</label><input type="number" th:field="*{price}"
+                            class="form-control" step="1000" min="0"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Warranty (months)</label><input type="number"
+                    <div class="form-group"><label>Bảo hành (tháng)</label><input type="number"
                             th:field="*{warrantyMonths}" class="form-control" min="0"></div>
-                    <div class="form-group"><label>Manufacturer</label><input type="text" th:field="*{manufacturer}"
+                    <div class="form-group"><label>Nhà sản xuất</label><input type="text" th:field="*{manufacturer}"
                             class="form-control"></div>
                 </div>
-                <div class="form-group"><label>Description</label><textarea th:field="*{description}"
+                <div class="form-group"><label>Mô tả</label><textarea th:field="*{description}"
                         class="form-control" rows="3"></textarea></div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
-                    <a th:href="@{/evm/parts}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu</button>
+                    <a th:href="@{/evm/parts}" class="btn btn-secondary">Hủy</a>
                 </div>
             </form>
         </div>

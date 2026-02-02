@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout :: html(content=~{::content}, pageTitle='Review Claim')}">
+    th:replace="~{layout :: html(content=~{::content}, pageTitle='Chi tiết bảo lãnh')}">
 
 <body>
     <div th:fragment="content">
@@ -13,27 +13,27 @@
             </div>
 
             <div class="form-row">
-                <div class="form-group"><label>Vehicle</label>
+                <div class="form-group"><label>Xe</label>
                     <div th:text="${claim.vehicle.vin + ' - ' + claim.vehicle.make + ' ' + claim.vehicle.model}">Vehicle
                     </div>
                 </div>
-                <div class="form-group"><label>Service Center</label>
+                <div class="form-group"><label>Trung tâm dịch vụ</label>
                     <div th:text="${claim.serviceCenter ?: 'N/A'}">SC</div>
                 </div>
             </div>
 
-            <div class="form-group"><label>Failure Description</label>
+            <div class="form-group"><label>Mô tả lỗi</label>
                 <div th:text="${claim.failureDescription}">Description</div>
             </div>
-            <div class="form-group" th:if="${claim.diagnosisNotes}"><label>Diagnosis Notes</label>
+            <div class="form-group" th:if="${claim.diagnosisNotes}"><label>Ghi chú chẩn đoán</label>
                 <div th:text="${claim.diagnosisNotes}">Notes</div>
             </div>
 
             <div class="form-row">
-                <div class="form-group"><label>Mileage</label>
+                <div class="form-group"><label>Số ODO</label>
                     <div th:text="${claim.mileageAtClaim ?: 'N/A'}">Miles</div>
                 </div>
-                <div class="form-group"><label>Labor Hours</label>
+                <div class="form-group"><label>Giờ công</label>
                     <div th:text="${claim.laborHours ?: 'N/A'}">Hours</div>
                 </div>
             </div>
@@ -42,21 +42,21 @@
         <!-- Approve/Reject Actions -->
         <div class="card mb-3" th:if="${claim.status.name() == 'SUBMITTED' or claim.status.name() == 'UNDER_REVIEW'}">
             <div class="card-header">
-                <h3 class="card-title">Review Decision</h3>
+                <h3 class="card-title">Quyết định phê duyệt</h3>
             </div>
             <div class="d-flex gap-2" style="flex-wrap: wrap;">
                 <form th:action="@{/evm/claims/{id}/approve(id=${claim.id})}" method="post">
-                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Approve Claim</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Duyệt yêu cầu</button>
                 </form>
                 <form th:action="@{/evm/claims/{id}/reject(id=${claim.id})}" method="post" class="d-flex gap-1">
                     <input type="text" name="rejectionReason" class="form-control" style="width: 300px;"
-                        placeholder="Rejection reason..." required>
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Reject</button>
+                        placeholder="Lý do từ chối..." required>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Từ chối</button>
                 </form>
             </div>
         </div>
 
-        <a th:href="@{/evm/claims}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+        <a th:href="@{/evm/claims}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại</a>
     </div>
 </body>
 

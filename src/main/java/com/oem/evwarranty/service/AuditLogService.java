@@ -24,6 +24,8 @@ public class AuditLogService {
                 .resourceId(resourceId)
                 .details(details)
                 .build();
+        if (log == null)
+            return;
         auditLogRepository.save(log);
     }
 

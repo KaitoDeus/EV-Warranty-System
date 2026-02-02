@@ -3,6 +3,7 @@ package com.oem.evwarranty.service;
 import com.oem.evwarranty.model.PartAllocation;
 import com.oem.evwarranty.repository.PartAllocationRepository;
 import com.oem.evwarranty.service.exception.ResourceNotFoundException;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class SupplyChainService {
         return allocationRepository.save(allocation);
     }
 
-    public PartAllocation ship(Long id, String trackingNumber) {
+    public PartAllocation ship(@NonNull Long id, String trackingNumber) {
         return allocationRepository.findById(id)
                 .map(a -> {
                     a.setStatus(PartAllocation.AllocationStatus.SHIPPED);
@@ -42,7 +43,7 @@ public class SupplyChainService {
                 .orElseThrow(() -> new ResourceNotFoundException("Allocation not found: " + id));
     }
 
-    public PartAllocation receive(Long id) {
+    public PartAllocation receive(@NonNull Long id) {
         return allocationRepository.findById(id)
                 .map(a -> {
                     a.setStatus(PartAllocation.AllocationStatus.RECEIVED);

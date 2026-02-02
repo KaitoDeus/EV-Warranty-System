@@ -6,6 +6,7 @@ import com.oem.evwarranty.repository.VehicleRepository;
 import com.oem.evwarranty.repository.CustomerRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ public class VehicleService {
         return vehicleRepository.findAll();
     }
 
-    public Optional<Vehicle> findById(Long id) {
+    public Optional<Vehicle> findById(@NonNull Long id) {
         return vehicleRepository.findById(id);
     }
 
@@ -39,11 +40,11 @@ public class VehicleService {
         return vehicleRepository.findByVin(vin);
     }
 
-    public Page<Vehicle> findAll(Pageable pageable) {
+    public Page<Vehicle> findAll(@NonNull Pageable pageable) {
         return vehicleRepository.findAll(pageable);
     }
 
-    public Page<Vehicle> searchVehicles(String search, Pageable pageable) {
+    public Page<Vehicle> searchVehicles(String search, @NonNull Pageable pageable) {
         if (search == null || search.trim().isEmpty()) {
             return vehicleRepository.findAll(pageable);
         }
@@ -85,7 +86,7 @@ public class VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
-    public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
+    public Vehicle updateVehicle(@NonNull Long id, Vehicle updatedVehicle) {
         return vehicleRepository.findById(id)
                 .map(vehicle -> {
                     vehicle.setModel(updatedVehicle.getModel());
@@ -102,7 +103,7 @@ public class VehicleService {
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
     }
 
-    public void deleteVehicle(Long id) {
+    public void deleteVehicle(@NonNull Long id) {
         vehicleRepository.deleteById(id);
     }
 

@@ -3,6 +3,7 @@ package com.oem.evwarranty.service;
 import com.oem.evwarranty.model.Appointment;
 import com.oem.evwarranty.repository.AppointmentRepository;
 import com.oem.evwarranty.service.exception.ResourceNotFoundException;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -19,7 +20,7 @@ public class AppointmentService {
         this.auditLogService = auditLogService;
     }
 
-    public Appointment schedule(Appointment appointment) {
+    public Appointment schedule(@NonNull Appointment appointment) {
         Appointment saved = appointmentRepository.save(appointment);
         auditLogService.log("SYSTEM", "SCHEDULE", "APPOINTMENT", saved.getId(),
                 "Scheduled for vehicle: " + appointment.getVehicle().getVin());
@@ -30,7 +31,7 @@ public class AppointmentService {
         return appointmentRepository.findByServiceCenterOrderByAppointmentDateAsc(sc);
     }
 
-    public Appointment updateStatus(Long id, Appointment.AppointmentStatus status) {
+    public Appointment updateStatus(@NonNull Long id, Appointment.AppointmentStatus status) {
         return appointmentRepository.findById(id)
                 .map(a -> {
                     a.setStatus(status);

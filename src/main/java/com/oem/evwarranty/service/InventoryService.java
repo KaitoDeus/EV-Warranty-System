@@ -4,6 +4,7 @@ import com.oem.evwarranty.model.Inventory;
 import com.oem.evwarranty.model.Part;
 import com.oem.evwarranty.repository.InventoryRepository;
 import com.oem.evwarranty.repository.PartRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class InventoryService {
         return inventoryRepository.findAll();
     }
 
-    public Optional<Inventory> findById(Long id) {
+    public Optional<Inventory> findById(@NonNull Long id) {
         return inventoryRepository.findById(id);
     }
 
@@ -37,7 +38,7 @@ public class InventoryService {
         return inventoryRepository.findByServiceCenter(serviceCenter);
     }
 
-    public Optional<Inventory> findByPartAndServiceCenter(Long partId, String serviceCenter) {
+    public Optional<Inventory> findByPartAndServiceCenter(@NonNull Long partId, String serviceCenter) {
         return inventoryRepository.findByPartIdAndServiceCenter(partId, serviceCenter);
     }
 
@@ -49,7 +50,8 @@ public class InventoryService {
         return inventoryRepository.findLowStockItemsByServiceCenter(serviceCenter);
     }
 
-    public Inventory createOrUpdateInventory(Long partId, String serviceCenter, int quantity) {
+    @SuppressWarnings("null")
+    public Inventory createOrUpdateInventory(@NonNull Long partId, String serviceCenter, int quantity) {
         Part part = partRepository.findById(partId)
                 .orElseThrow(() -> new IllegalArgumentException("Part not found"));
 
@@ -72,7 +74,7 @@ public class InventoryService {
         }
     }
 
-    public Inventory adjustStock(Long id, int adjustment) {
+    public Inventory adjustStock(@NonNull Long id, int adjustment) {
         return inventoryRepository.findById(id)
                 .map(inventory -> {
                     int newQuantity = inventory.getQuantityOnHand() + adjustment;
@@ -85,7 +87,7 @@ public class InventoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
     }
 
-    public Inventory reserveStock(Long id, int quantity) {
+    public Inventory reserveStock(@NonNull Long id, int quantity) {
         return inventoryRepository.findById(id)
                 .map(inventory -> {
                     if (inventory.getAvailableQuantity() < quantity) {
@@ -97,7 +99,7 @@ public class InventoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
     }
 
-    public Inventory releaseReservation(Long id, int quantity) {
+    public Inventory releaseReservation(@NonNull Long id, int quantity) {
         return inventoryRepository.findById(id)
                 .map(inventory -> {
                     int newReserved = inventory.getQuantityReserved() - quantity;
@@ -107,7 +109,7 @@ public class InventoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
     }
 
-    public Inventory consumeStock(Long id, int quantity) {
+    public Inventory consumeStock(@NonNull Long id, int quantity) {
         return inventoryRepository.findById(id)
                 .map(inventory -> {
                     inventory.setQuantityOnHand(inventory.getQuantityOnHand() - quantity);
@@ -117,7 +119,7 @@ public class InventoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
     }
 
-    public void deleteInventory(Long id) {
+    public void deleteInventory(@NonNull Long id) {
         inventoryRepository.deleteById(id);
     }
 }

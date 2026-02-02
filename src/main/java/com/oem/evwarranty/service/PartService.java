@@ -4,6 +4,7 @@ import com.oem.evwarranty.model.Part;
 import com.oem.evwarranty.repository.PartRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PartService {
         return partRepository.findByIsActiveTrue();
     }
 
-    public Optional<Part> findById(Long id) {
+    public Optional<Part> findById(@NonNull Long id) {
         return partRepository.findById(id);
     }
 
@@ -38,11 +39,11 @@ public class PartService {
         return partRepository.findByPartNumber(partNumber);
     }
 
-    public Page<Part> findAll(Pageable pageable) {
+    public Page<Part> findAll(@NonNull Pageable pageable) {
         return partRepository.findAll(pageable);
     }
 
-    public Page<Part> searchParts(String search, Pageable pageable) {
+    public Page<Part> searchParts(String search, @NonNull Pageable pageable) {
         if (search == null || search.trim().isEmpty()) {
             return partRepository.findAll(pageable);
         }
@@ -60,7 +61,7 @@ public class PartService {
         return partRepository.save(part);
     }
 
-    public Part updatePart(Long id, Part updatedPart) {
+    public Part updatePart(@NonNull Long id, Part updatedPart) {
         return partRepository.findById(id)
                 .map(part -> {
                     part.setName(updatedPart.getName());
@@ -77,11 +78,11 @@ public class PartService {
                 .orElseThrow(() -> new IllegalArgumentException("Part not found"));
     }
 
-    public void deletePart(Long id) {
+    public void deletePart(@NonNull Long id) {
         partRepository.deleteById(id);
     }
 
-    public void togglePartStatus(Long id) {
+    public void togglePartStatus(@NonNull Long id) {
         partRepository.findById(id).ifPresent(part -> {
             part.setIsActive(!part.getIsActive());
             partRepository.save(part);

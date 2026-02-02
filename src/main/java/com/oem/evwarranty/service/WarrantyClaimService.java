@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.lang.NonNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class WarrantyClaimService {
         return claimRepository.findAll();
     }
 
-    public Optional<WarrantyClaim> findById(Long id) {
+    public Optional<WarrantyClaim> findById(@NonNull Long id) {
         return claimRepository.findById(id);
     }
 
@@ -51,11 +52,11 @@ public class WarrantyClaimService {
         return claimRepository.findByClaimNumber(claimNumber);
     }
 
-    public Page<WarrantyClaim> findAll(Pageable pageable) {
+    public Page<WarrantyClaim> findAll(@NonNull Pageable pageable) {
         return claimRepository.findAll(pageable);
     }
 
-    public Page<WarrantyClaim> searchClaims(String search, Pageable pageable) {
+    public Page<WarrantyClaim> searchClaims(String search, @NonNull Pageable pageable) {
         if (search == null || search.trim().isEmpty()) {
             return claimRepository.findAll(pageable);
         }
@@ -80,7 +81,8 @@ public class WarrantyClaimService {
                 pageable);
     }
 
-    public WarrantyClaim createClaim(WarrantyClaim claim, Long vehicleId, Long vehiclePartId, Long submittedById) {
+    public WarrantyClaim createClaim(WarrantyClaim claim, @NonNull Long vehicleId, Long vehiclePartId,
+            Long submittedById) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with ID: " + vehicleId));
         claim.setVehicle(vehicle);
@@ -109,7 +111,7 @@ public class WarrantyClaimService {
         return saved;
     }
 
-    public WarrantyClaim submitClaim(Long id) {
+    public WarrantyClaim submitClaim(@NonNull Long id) {
         return claimRepository.findById(id)
                 .map(claim -> {
                     if (claim.getStatus() != WarrantyClaim.ClaimStatus.DRAFT) {
@@ -128,7 +130,7 @@ public class WarrantyClaimService {
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
-    public WarrantyClaim approveClaim(Long id, Long reviewerId) {
+    public WarrantyClaim approveClaim(@NonNull Long id, @NonNull Long reviewerId) {
         User reviewer = userRepository.findById(reviewerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Reviewer not found with ID: " + reviewerId));
 
@@ -146,7 +148,7 @@ public class WarrantyClaimService {
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
-    public WarrantyClaim rejectClaim(Long id, Long reviewerId, String reason) {
+    public WarrantyClaim rejectClaim(@NonNull Long id, @NonNull Long reviewerId, String reason) {
         User reviewer = userRepository.findById(reviewerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Reviewer not found with ID: " + reviewerId));
 
@@ -165,7 +167,7 @@ public class WarrantyClaimService {
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
-    public WarrantyClaim completeClaim(Long id) {
+    public WarrantyClaim completeClaim(@NonNull Long id) {
         return claimRepository.findById(id)
                 .map(claim -> {
                     claim.setStatus(WarrantyClaim.ClaimStatus.COMPLETED);
@@ -183,7 +185,7 @@ public class WarrantyClaimService {
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
-    public WarrantyClaim updateClaim(Long id, WarrantyClaim updatedClaim) {
+    public WarrantyClaim updateClaim(@NonNull Long id, WarrantyClaim updatedClaim) {
         return claimRepository.findById(id)
                 .map(claim -> {
                     claim.setFailureDescription(updatedClaim.getFailureDescription());
@@ -202,7 +204,7 @@ public class WarrantyClaimService {
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
-    public WarrantyClaim assignTechnician(Long claimId, Long technicianId) {
+    public WarrantyClaim assignTechnician(@NonNull Long claimId, @NonNull Long technicianId) {
         User technician = userRepository.findById(technicianId)
                 .orElseThrow(() -> new ResourceNotFoundException("Technician not found with ID: " + technicianId));
 
@@ -219,7 +221,7 @@ public class WarrantyClaimService {
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + claimId));
     }
 
-    public void deleteClaim(Long id) {
+    public void deleteClaim(@NonNull Long id) {
         if (!claimRepository.existsById(id)) {
             throw new ResourceNotFoundException("Claim not found with ID: " + id);
         }

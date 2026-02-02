@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.lang.NonNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public Optional<Customer> findById(Long id) {
+    public Optional<Customer> findById(@NonNull Long id) {
         return customerRepository.findById(id);
     }
 
@@ -34,11 +35,11 @@ public class CustomerService {
         return customerRepository.findByEmail(email);
     }
 
-    public Page<Customer> findAll(Pageable pageable) {
+    public Page<Customer> findAll(@NonNull Pageable pageable) {
         return customerRepository.findAll(pageable);
     }
 
-    public Page<Customer> searchCustomers(String search, Pageable pageable) {
+    public Page<Customer> searchCustomers(String search, @NonNull Pageable pageable) {
         if (search == null || search.trim().isEmpty()) {
             return customerRepository.findAll(pageable);
         }
@@ -52,7 +53,7 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Customer updateCustomer(Long id, Customer updatedCustomer) {
+    public Customer updateCustomer(@NonNull Long id, Customer updatedCustomer) {
         return customerRepository.findById(id)
                 .map(customer -> {
                     customer.setFullName(updatedCustomer.getFullName());
@@ -70,7 +71,7 @@ public class CustomerService {
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
 
-    public void deleteCustomer(Long id) {
+    public void deleteCustomer(@NonNull Long id) {
         customerRepository.deleteById(id);
     }
 

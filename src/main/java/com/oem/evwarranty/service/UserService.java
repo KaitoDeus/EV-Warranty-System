@@ -1,12 +1,12 @@
 package com.oem.evwarranty.service;
 
 import com.oem.evwarranty.model.User;
-import com.oem.evwarranty.model.Role;
 import com.oem.evwarranty.repository.UserRepository;
 import com.oem.evwarranty.repository.RoleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -34,7 +34,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(@NonNull Long id) {
         return userRepository.findById(id);
     }
 
@@ -71,7 +71,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User updatedUser) {
+    public User updateUser(@NonNull Long id, User updatedUser) {
         return userRepository.findById(id)
                 .map(user -> {
                     user.setFullName(updatedUser.getFullName());
@@ -84,18 +84,18 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    public void updatePassword(Long id, String newPassword) {
+    public void updatePassword(@NonNull Long id, String newPassword) {
         userRepository.findById(id).ifPresent(user -> {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
         });
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(@NonNull Long id) {
         userRepository.deleteById(id);
     }
 
-    public void toggleUserStatus(Long id) {
+    public void toggleUserStatus(@NonNull Long id) {
         userRepository.findById(id).ifPresent(user -> {
             user.setActive(!user.getActive());
             userRepository.save(user);

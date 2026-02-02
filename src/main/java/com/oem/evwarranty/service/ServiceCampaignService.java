@@ -6,6 +6,7 @@ import com.oem.evwarranty.repository.ServiceCampaignRepository;
 import com.oem.evwarranty.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ServiceCampaignService {
         return campaignRepository.findAll();
     }
 
-    public Optional<ServiceCampaign> findById(Long id) {
+    public Optional<ServiceCampaign> findById(@NonNull Long id) {
         return campaignRepository.findById(id);
     }
 
@@ -38,11 +39,11 @@ public class ServiceCampaignService {
         return campaignRepository.findByCampaignNumber(campaignNumber);
     }
 
-    public Page<ServiceCampaign> findAll(Pageable pageable) {
+    public Page<ServiceCampaign> findAll(@NonNull Pageable pageable) {
         return campaignRepository.findAll(pageable);
     }
 
-    public Page<ServiceCampaign> searchCampaigns(String search, Pageable pageable) {
+    public Page<ServiceCampaign> searchCampaigns(String search, @NonNull Pageable pageable) {
         if (search == null || search.trim().isEmpty()) {
             return campaignRepository.findAll(pageable);
         }
@@ -70,7 +71,7 @@ public class ServiceCampaignService {
         return campaignRepository.save(campaign);
     }
 
-    public ServiceCampaign updateCampaign(Long id, ServiceCampaign updatedCampaign) {
+    public ServiceCampaign updateCampaign(@NonNull Long id, ServiceCampaign updatedCampaign) {
         return campaignRepository.findById(id)
                 .map(campaign -> {
                     campaign.setTitle(updatedCampaign.getTitle());
@@ -90,7 +91,7 @@ public class ServiceCampaignService {
                 .orElseThrow(() -> new IllegalArgumentException("Campaign not found"));
     }
 
-    public ServiceCampaign activateCampaign(Long id) {
+    public ServiceCampaign activateCampaign(@NonNull Long id) {
         return campaignRepository.findById(id)
                 .map(campaign -> {
                     campaign.setStatus(ServiceCampaign.CampaignStatus.ACTIVE);
@@ -99,7 +100,7 @@ public class ServiceCampaignService {
                 .orElseThrow(() -> new IllegalArgumentException("Campaign not found"));
     }
 
-    public ServiceCampaign completeCampaign(Long id) {
+    public ServiceCampaign completeCampaign(@NonNull Long id) {
         return campaignRepository.findById(id)
                 .map(campaign -> {
                     campaign.setStatus(ServiceCampaign.CampaignStatus.COMPLETED);
@@ -108,14 +109,14 @@ public class ServiceCampaignService {
                 .orElseThrow(() -> new IllegalArgumentException("Campaign not found"));
     }
 
-    public void incrementCompletedCount(Long id) {
+    public void incrementCompletedCount(@NonNull Long id) {
         campaignRepository.findById(id).ifPresent(campaign -> {
             campaign.setCompletedCount(campaign.getCompletedCount() + 1);
             campaignRepository.save(campaign);
         });
     }
 
-    public void deleteCampaign(Long id) {
+    public void deleteCampaign(@NonNull Long id) {
         campaignRepository.deleteById(id);
     }
 

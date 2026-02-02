@@ -269,6 +269,51 @@ CREATE TABLE IF NOT EXISTS service_history (
 );
 
 -- =====================================================
+-- 14. AUDIT_LOGS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    action VARCHAR(100) NOT NULL,
+    resource_type VARCHAR(50) NOT NULL,
+    resource_id BIGINT,
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =====================================================
+-- 15. APPOINTMENTS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS appointments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id BIGINT NOT NULL,
+    campaign_id BIGINT,
+    appointment_date DATETIME NOT NULL,
+    status VARCHAR(20) DEFAULT 'SCHEDULED',
+    service_center VARCHAR(100),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
+    FOREIGN KEY (campaign_id) REFERENCES service_campaigns(id)
+);
+
+-- =====================================================
+-- 16. PART_ALLOCATIONS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS part_allocations (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    part_id BIGINT NOT NULL,
+    service_center VARCHAR(100) NOT NULL,
+    quantity INT NOT NULL,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    tracking_number VARCHAR(50),
+    requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    shipped_at TIMESTAMP NULL,
+    received_at TIMESTAMP NULL,
+    FOREIGN KEY (part_id) REFERENCES parts(id)
+);
+
+-- =====================================================
 -- INDEXES FOR PERFORMANCE (MySQL compatible)
 -- =====================================================
 ALTER TABLE vehicles ADD INDEX idx_vehicles_vin (vin);
@@ -282,6 +327,9 @@ ALTER TABLE parts ADD INDEX idx_parts_category (category);
 ALTER TABLE service_campaigns ADD INDEX idx_campaigns_status (status);
 ALTER TABLE inventory ADD INDEX idx_inventory_part (part_id);
 ALTER TABLE inventory ADD INDEX idx_inventory_center (service_center);
+ALTER TABLE audit_logs ADD INDEX idx_audit_resource (resource_type, resource_id);
+ALTER TABLE appointments ADD INDEX idx_appointments_sc (service_center);
+ALTER TABLE part_allocations ADD INDEX idx_allocations_sc (service_center);
 
 -- =====================================================
 -- SEED DATA - ROLES

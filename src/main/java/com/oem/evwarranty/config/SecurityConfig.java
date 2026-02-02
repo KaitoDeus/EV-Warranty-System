@@ -59,6 +59,9 @@ public class SecurityConfig {
                         // Swagger API Docs
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
+                        // Actuator for Health Checks
+                        .requestMatchers("/actuator/**").permitAll()
+
                         // REST API endpoints (require authentication)
                         .requestMatchers("/api/v1/**").authenticated()
 

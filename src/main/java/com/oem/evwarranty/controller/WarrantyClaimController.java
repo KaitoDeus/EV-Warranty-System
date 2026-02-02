@@ -85,7 +85,6 @@ public class WarrantyClaimController {
 
     @PostMapping
     @Operation(summary = "Create claim", description = "Register a new warranty claim for a vehicle")
-    @SuppressWarnings("null")
     public String create(@Valid @ModelAttribute WarrantyClaim claim,
             BindingResult result,
             @RequestParam Long vehicleId,
@@ -116,7 +115,6 @@ public class WarrantyClaimController {
 
     @GetMapping("/{id}")
     @Operation(summary = "View claim details", description = "Display full details and history of a specific warranty claim")
-    @SuppressWarnings("null")
     public String view(@PathVariable Long id, Model model) {
         if (id == null)
             throw new IllegalArgumentException("ID cannot be null");
@@ -129,7 +127,6 @@ public class WarrantyClaimController {
 
     @GetMapping("/{id}/edit")
     @Operation(summary = "Edit claim form", description = "Show the form to edit an existing draft claim")
-    @SuppressWarnings("null")
     public String editForm(@PathVariable Long id, Model model) {
         if (id == null)
             throw new IllegalArgumentException("ID cannot be null");
@@ -142,7 +139,6 @@ public class WarrantyClaimController {
 
     @PostMapping("/{id}")
     @Operation(summary = "Update claim", description = "Save changes to an existing warranty claim")
-    @SuppressWarnings("null")
     public String update(@PathVariable Long id,
             @Valid @ModelAttribute WarrantyClaim claim,
             BindingResult result,
@@ -163,7 +159,6 @@ public class WarrantyClaimController {
 
     @PostMapping("/{id}/submit")
     @Operation(summary = "Submit claim", description = "Submit a draft warranty claim for review by the manufacturer")
-    @SuppressWarnings("null")
     public String submit(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             if (id == null)

@@ -50,7 +50,6 @@ public class InventoryService {
         return inventoryRepository.findLowStockItemsByServiceCenter(serviceCenter);
     }
 
-    @SuppressWarnings("null")
     public Inventory createOrUpdateInventory(@NonNull Long partId, String serviceCenter, int quantity) {
         Part part = partRepository.findById(partId)
                 .orElseThrow(() -> new IllegalArgumentException("Part not found"));

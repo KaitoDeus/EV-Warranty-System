@@ -70,7 +70,6 @@ public class PartController {
     }
 
     @GetMapping("/{id}")
-    @SuppressWarnings("null")
     public String view(@PathVariable Long id, Model model) {
         if (id == null)
             throw new IllegalArgumentException("ID cannot be null");
@@ -81,7 +80,6 @@ public class PartController {
     }
 
     @GetMapping("/{id}/edit")
-    @SuppressWarnings("null")
     public String editForm(@PathVariable Long id, Model model) {
         if (id == null)
             throw new IllegalArgumentException("ID cannot be null");

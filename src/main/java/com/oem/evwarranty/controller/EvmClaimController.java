@@ -64,7 +64,6 @@ public class EvmClaimController {
 
     @PostMapping("/{id}/approve")
     @Operation(summary = "Approve claim", description = "Approve a warranty claim for payment and repair")
-    @SuppressWarnings("null")
     public String approve(@PathVariable Long id,
             Authentication auth,
             RedirectAttributes redirectAttributes) {
@@ -83,7 +82,6 @@ public class EvmClaimController {
     }
 
     @PostMapping("/{id}/reject")
-    @SuppressWarnings("null")
     public String reject(@PathVariable Long id,
             @RequestParam String rejectionReason,
             Authentication auth,

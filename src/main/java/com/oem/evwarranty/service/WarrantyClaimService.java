@@ -1,5 +1,7 @@
 package com.oem.evwarranty.service;
 
+import com.oem.evwarranty.service.exception.BusinessLogicException;
+import com.oem.evwarranty.service.exception.ResourceNotFoundException;
 import com.oem.evwarranty.model.*;
 import com.oem.evwarranty.repository.*;
 import org.springframework.data.domain.Page;
@@ -23,15 +25,18 @@ public class WarrantyClaimService {
     private final VehicleRepository vehicleRepository;
     private final VehiclePartRepository vehiclePartRepository;
     private final UserRepository userRepository;
+    private final AuditLogService auditLogService;
 
     public WarrantyClaimService(WarrantyClaimRepository claimRepository,
             VehicleRepository vehicleRepository,
             VehiclePartRepository vehiclePartRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            AuditLogService auditLogService) {
         this.claimRepository = claimRepository;
         this.vehicleRepository = vehicleRepository;
         this.vehiclePartRepository = vehiclePartRepository;
         this.userRepository = userRepository;
+        this.auditLogService = auditLogService;
     }
 
     public List<WarrantyClaim> findAll() {
@@ -77,67 +82,87 @@ public class WarrantyClaimService {
 
     public WarrantyClaim createClaim(WarrantyClaim claim, Long vehicleId, Long vehiclePartId, Long submittedById) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with ID: " + vehicleId));
         claim.setVehicle(vehicle);
 
         if (vehiclePartId != null) {
             VehiclePart vehiclePart = vehiclePartRepository.findById(vehiclePartId)
-                    .orElseThrow(() -> new IllegalArgumentException("Vehicle part not found"));
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Vehicle part not found with ID: " + vehiclePartId));
             claim.setVehiclePart(vehiclePart);
         }
 
+        User submitter = null;
         if (submittedById != null) {
-            User submitter = userRepository.findById(submittedById)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            submitter = userRepository.findById(submittedById)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + submittedById));
             claim.setSubmittedBy(submitter);
         }
 
         claim.setStatus(WarrantyClaim.ClaimStatus.DRAFT);
         claim.setClaimNumber("WC" + System.currentTimeMillis());
 
-        return claimRepository.save(claim);
+        WarrantyClaim saved = claimRepository.save(claim);
+        auditLogService.log(submitter != null ? submitter.getUsername() : "SYSTEM",
+                "CREATE", "WARRANTY_CLAIM", saved.getId(),
+                "Created new claim for vehicle: " + vehicle.getVin());
+        return saved;
     }
 
     public WarrantyClaim submitClaim(Long id) {
         return claimRepository.findById(id)
                 .map(claim -> {
                     if (claim.getStatus() != WarrantyClaim.ClaimStatus.DRAFT) {
-                        throw new IllegalStateException("Claim can only be submitted from DRAFT status");
+                        throw new BusinessLogicException(
+                                "Claim can only be submitted from DRAFT status. Current status: " + claim.getStatus());
                     }
                     claim.setStatus(WarrantyClaim.ClaimStatus.SUBMITTED);
                     claim.setSubmittedAt(LocalDateTime.now());
-                    return claimRepository.save(claim);
+
+                    WarrantyClaim saved = claimRepository.save(claim);
+                    auditLogService.log(
+                            claim.getSubmittedBy() != null ? claim.getSubmittedBy().getUsername() : "SYSTEM",
+                            "SUBMIT", "WARRANTY_CLAIM", saved.getId(), "Submitted claim for review");
+                    return saved;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Claim not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
     public WarrantyClaim approveClaim(Long id, Long reviewerId) {
+        User reviewer = userRepository.findById(reviewerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Reviewer not found with ID: " + reviewerId));
+
         return claimRepository.findById(id)
                 .map(claim -> {
-                    User reviewer = userRepository.findById(reviewerId)
-                            .orElseThrow(() -> new IllegalArgumentException("Reviewer not found"));
-
                     claim.setStatus(WarrantyClaim.ClaimStatus.APPROVED);
                     claim.setReviewedBy(reviewer);
                     claim.setReviewedAt(LocalDateTime.now());
-                    return claimRepository.save(claim);
+
+                    WarrantyClaim saved = claimRepository.save(claim);
+                    auditLogService.log(reviewer.getUsername(), "APPROVE", "WARRANTY_CLAIM", saved.getId(),
+                            "Approved the claim");
+                    return saved;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Claim not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
     public WarrantyClaim rejectClaim(Long id, Long reviewerId, String reason) {
+        User reviewer = userRepository.findById(reviewerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Reviewer not found with ID: " + reviewerId));
+
         return claimRepository.findById(id)
                 .map(claim -> {
-                    User reviewer = userRepository.findById(reviewerId)
-                            .orElseThrow(() -> new IllegalArgumentException("Reviewer not found"));
-
                     claim.setStatus(WarrantyClaim.ClaimStatus.REJECTED);
                     claim.setReviewedBy(reviewer);
                     claim.setReviewedAt(LocalDateTime.now());
                     claim.setRejectionReason(reason);
-                    return claimRepository.save(claim);
+
+                    WarrantyClaim saved = claimRepository.save(claim);
+                    auditLogService.log(reviewer.getUsername(), "REJECT", "WARRANTY_CLAIM", saved.getId(),
+                            "Rejected. Reason: " + reason);
+                    return saved;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Claim not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
     public WarrantyClaim completeClaim(Long id) {
@@ -146,14 +171,16 @@ public class WarrantyClaimService {
                     claim.setStatus(WarrantyClaim.ClaimStatus.COMPLETED);
                     claim.setCompletedAt(LocalDateTime.now());
 
-                    // Calculate total cost
                     BigDecimal laborCost = claim.getLaborCost() != null ? claim.getLaborCost() : BigDecimal.ZERO;
                     BigDecimal partsCost = claim.getPartsCost() != null ? claim.getPartsCost() : BigDecimal.ZERO;
                     claim.setTotalCost(laborCost.add(partsCost));
 
-                    return claimRepository.save(claim);
+                    WarrantyClaim saved = claimRepository.save(claim);
+                    auditLogService.log("SYSTEM", "COMPLETE", "WARRANTY_CLAIM", saved.getId(),
+                            "Claim marked as completed");
+                    return saved;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Claim not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
     public WarrantyClaim updateClaim(Long id, WarrantyClaim updatedClaim) {
@@ -166,25 +193,38 @@ public class WarrantyClaimService {
                     claim.setLaborCost(updatedClaim.getLaborCost());
                     claim.setPartsCost(updatedClaim.getPartsCost());
                     claim.setMileageAtClaim(updatedClaim.getMileageAtClaim());
-                    return claimRepository.save(claim);
+
+                    WarrantyClaim saved = claimRepository.save(claim);
+                    auditLogService.log("SYSTEM", "UPDATE", "WARRANTY_CLAIM", saved.getId(),
+                            "Updated claim technical details");
+                    return saved;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Claim not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + id));
     }
 
     public WarrantyClaim assignTechnician(Long claimId, Long technicianId) {
+        User technician = userRepository.findById(technicianId)
+                .orElseThrow(() -> new ResourceNotFoundException("Technician not found with ID: " + technicianId));
+
         return claimRepository.findById(claimId)
                 .map(claim -> {
-                    User technician = userRepository.findById(technicianId)
-                            .orElseThrow(() -> new IllegalArgumentException("Technician not found"));
                     claim.setTechnician(technician);
                     claim.setStatus(WarrantyClaim.ClaimStatus.IN_PROGRESS);
-                    return claimRepository.save(claim);
+
+                    WarrantyClaim saved = claimRepository.save(claim);
+                    auditLogService.log("SYSTEM", "ASSIGN_TECH", "WARRANTY_CLAIM", saved.getId(),
+                            "Assigned technician: " + technician.getFullName());
+                    return saved;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Claim not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with ID: " + claimId));
     }
 
     public void deleteClaim(Long id) {
+        if (!claimRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Claim not found with ID: " + id);
+        }
         claimRepository.deleteById(id);
+        auditLogService.log("SYSTEM", "DELETE", "WARRANTY_CLAIM", id, "Permanent deletion");
     }
 
     public long count() {

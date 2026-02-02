@@ -1,6 +1,9 @@
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\ServiceCampaignRepository.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\PerformanceService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\AuditLogService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\VehicleRepository.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\AIPredictionService.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\Appointment.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\Vehicle.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\config\handler\GlobalExceptionHandler.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\ReportService.java
@@ -8,8 +11,10 @@ D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\AuthController
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\Customer.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\InventoryRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\mapper\VehicleMapper.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\PartAllocation.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\dto\WarrantyClaimDTO.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\ServiceHistoryRepository.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\AppointmentService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\InventoryService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\ClaimAttachment.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\api\WarrantyClaimRestController.java
@@ -24,6 +29,7 @@ D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\api\ReportsRes
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\mapper\WarrantyClaimMapper.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\WarrantyClaimService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\RoleRepository.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\PartAllocationRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\exception\ResourceNotFoundException.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\EvmClaimController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\PartRepository.java
@@ -31,14 +37,17 @@ D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\DashboardContr
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\VehicleController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\config\WebConfig.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\UserRepository.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\SupplyChainService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\AuditLogRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\CustomerService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\PartController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\PartService.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\api\AuditLogRestController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\Part.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\Role.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\WarrantyPolicyRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\CustomUserDetailsService.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\AppointmentRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\AdminController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\VehiclePartRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\VehiclePart.java

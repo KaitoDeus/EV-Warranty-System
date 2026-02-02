@@ -92,7 +92,8 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll())
                 .exceptionHandling(ex -> ex
-                        .accessDeniedPage("/error/403"));
+                        .accessDeniedPage("/error/403"))
+                .httpBasic(org.springframework.security.config.Customizer.withDefaults());
 
         // Allow H2 console for development
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));

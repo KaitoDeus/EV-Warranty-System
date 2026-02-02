@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # MySQL Database
@@ -18,18 +18,30 @@ services:
     networks:
       - evwarranty-network
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123" ]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-proot123",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
 
-  # Spring Boot Backend
+  # Spring Boot Backend (Dev Mode with Hot Reload)
+  # Spring Boot Backend (Production Mode)
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: evwarranty-app
+    image: ev-warranty-system:latest
     environment:
       SPRING_PROFILES_ACTIVE: docker
       MYSQL_HOST: mysql
@@ -44,7 +56,6 @@ services:
         condition: service_healthy
     networks:
       - evwarranty-network
-    restart: unless-stopped
 
 networks:
   evwarranty-network:
@@ -52,3 +63,4 @@ networks:
 
 volumes:
   mysql_data:
+  maven_repo:

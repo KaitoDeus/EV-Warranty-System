@@ -1,7 +1,7 @@
 package com.oem.evwarranty.controller;
 
 import com.oem.evwarranty.model.User;
-import com.oem.evwarranty.model.Role;
+
 import com.oem.evwarranty.service.UserService;
 import com.oem.evwarranty.repository.RoleRepository;
 import jakarta.validation.Valid;

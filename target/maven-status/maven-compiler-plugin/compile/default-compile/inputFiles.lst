@@ -7,10 +7,12 @@ D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\ReportService.jav
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\AuthController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\Customer.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\InventoryRepository.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\mapper\VehicleMapper.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\dto\WarrantyClaimDTO.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\ServiceHistoryRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\InventoryService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\ClaimAttachment.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\api\WarrantyClaimRestController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\UserService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\exception\BusinessLogicException.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\User.java
@@ -18,6 +20,7 @@ D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\ServiceCampaignSe
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\WarrantyClaimController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\ClaimAttachmentRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\VehicleService.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\api\ReportsRestController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\mapper\WarrantyClaimMapper.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\service\WarrantyClaimService.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\RoleRepository.java
@@ -45,12 +48,14 @@ D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\CampaignContro
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\EvWarrantyApplication.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\Inventory.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\CustomerRepository.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\dto\VehicleDTO.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\WarrantyPolicy.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\ServiceHistory.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\CustomerController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\config\OpenApiConfig.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\config\SecurityConfig.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\config\GlobalModelAdvice.java
+D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\controller\api\VehicleRestController.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\WarrantyClaim.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\repository\WarrantyClaimRepository.java
 D:\EV-Warranty-System\src\main\java\com\oem\evwarranty\model\ServiceCampaign.java

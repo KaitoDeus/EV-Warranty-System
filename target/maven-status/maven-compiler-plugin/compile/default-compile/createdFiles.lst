@@ -1,13 +1,13 @@
 com\oem\evwarranty\repository\UserRepository.class
 com\oem\evwarranty\controller\PartController.class
 com\oem\evwarranty\service\UserService.class
+com\oem\evwarranty\config\GlobalModelAdvice.class
 com\oem\evwarranty\model\ClaimAttachment$AttachmentType.class
 com\oem\evwarranty\repository\CustomerRepository.class
 com\oem\evwarranty\model\User$UserBuilder.class
 com\oem\evwarranty\model\Inventory.class
 com\oem\evwarranty\model\Vehicle$VehicleBuilder.class
 com\oem\evwarranty\controller\CustomerController.class
-com\oem\evwarranty\config\DataInitializer.class
 com\oem\evwarranty\model\WarrantyClaim$ClaimStatus.class
 com\oem\evwarranty\model\Part$PartCategory.class
 com\oem\evwarranty\model\ClaimAttachment.class
@@ -27,6 +27,7 @@ com\oem\evwarranty\model\Vehicle.class
 com\oem\evwarranty\repository\PartRepository.class
 com\oem\evwarranty\service\VehicleService.class
 com\oem\evwarranty\service\CustomerService.class
+com\oem\evwarranty\config\OpenApiConfig.class
 com\oem\evwarranty\repository\WarrantyClaimRepository.class
 com\oem\evwarranty\repository\VehicleRepository.class
 com\oem\evwarranty\controller\DashboardController.class
@@ -50,6 +51,7 @@ com\oem\evwarranty\service\CustomUserDetailsService.class
 com\oem\evwarranty\model\WarrantyPolicy$WarrantyPolicyBuilder.class
 com\oem\evwarranty\service\ReportService.class
 com\oem\evwarranty\controller\InventoryController.class
+com\oem\evwarranty\config\WebConfig.class
 com\oem\evwarranty\repository\ServiceCampaignRepository.class
 com\oem\evwarranty\EvWarrantyApplication.class
 com\oem\evwarranty\controller\AdminController.class

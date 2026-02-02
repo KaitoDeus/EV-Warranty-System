@@ -16,12 +16,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for Admin operations (User management, system settings).
  */
 @Controller
 @RequestMapping("/admin")
+@Tag(name = "Admin Operations", description = "System administration, user management, and security settings")
 public class AdminController {
 
     private final UserService userService;
@@ -38,6 +41,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
+    @Operation(summary = "List users", description = "Retrieve a paginated list of all system users with search functionality")
     public String listUsers(Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -81,6 +85,8 @@ public class AdminController {
 
     @GetMapping("/users/{id}")
     public String viewUser(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         User user = userService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         model.addAttribute("user", user);
@@ -89,6 +95,8 @@ public class AdminController {
 
     @GetMapping("/users/{id}/edit")
     public String editUserForm(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         User user = userService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         model.addAttribute("user", user);
@@ -107,6 +115,8 @@ public class AdminController {
             return "admin/users/form";
         }
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             userService.updateUser(id, user);
             redirectAttributes.addFlashAttribute("success", "User updated successfully");
         } catch (IllegalArgumentException e) {
@@ -117,6 +127,8 @@ public class AdminController {
 
     @PostMapping("/users/{id}/toggle")
     public String toggleUserStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         userService.toggleUserStatus(id);
         redirectAttributes.addFlashAttribute("success", "User status updated");
         return "redirect:/admin/users";
@@ -127,6 +139,8 @@ public class AdminController {
             @RequestParam String newPassword,
             RedirectAttributes redirectAttributes) {
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             userService.updatePassword(id, newPassword);
             redirectAttributes.addFlashAttribute("success", "Password reset successfully");
         } catch (Exception e) {

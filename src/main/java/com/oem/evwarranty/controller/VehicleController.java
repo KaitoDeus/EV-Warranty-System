@@ -12,12 +12,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for Vehicle management (Service Center).
  */
 @Controller
 @RequestMapping("/sc/vehicles")
+@Tag(name = "Vehicle Management", description = "Operations for registering and managing electric vehicles")
 public class VehicleController {
 
     private final VehicleService vehicleService;
@@ -29,6 +32,7 @@ public class VehicleController {
     }
 
     @GetMapping
+    @Operation(summary = "List vehicles", description = "View a paginated list of all vehicles in the system")
     public String list(Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -73,6 +77,8 @@ public class VehicleController {
 
     @GetMapping("/{id}")
     public String view(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         Vehicle vehicle = vehicleService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
         model.addAttribute("vehicle", vehicle);
@@ -81,6 +87,8 @@ public class VehicleController {
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         Vehicle vehicle = vehicleService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
         model.addAttribute("vehicle", vehicle);
@@ -101,6 +109,8 @@ public class VehicleController {
             return "sc/vehicles/form";
         }
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             vehicleService.updateVehicle(id, vehicle);
             redirectAttributes.addFlashAttribute("success", "Vehicle updated successfully");
         } catch (IllegalArgumentException e) {
@@ -112,6 +122,8 @@ public class VehicleController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             vehicleService.deleteVehicle(id);
             redirectAttributes.addFlashAttribute("success", "Vehicle deleted successfully");
         } catch (Exception e) {
@@ -122,6 +134,7 @@ public class VehicleController {
 
     @GetMapping("/search")
     @ResponseBody
+    @Operation(summary = "Search by VIN API", description = "API endpoint to find vehicle details by VIN")
     public Vehicle searchByVin(@RequestParam String vin) {
         return vehicleService.findByVin(vin).orElse(null);
     }

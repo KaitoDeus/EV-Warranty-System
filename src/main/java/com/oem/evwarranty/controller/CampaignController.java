@@ -13,12 +13,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for Service Campaign (Recall) management (EVM Staff).
  */
 @Controller
 @RequestMapping("/evm/campaigns")
+@Tag(name = "Service Campaigns", description = "Operations for managing vehicle recalls and service bulletins by EV Manufacturer staff")
 public class CampaignController {
 
     private final ServiceCampaignService campaignService;
@@ -30,6 +33,7 @@ public class CampaignController {
     }
 
     @GetMapping
+    @Operation(summary = "List campaigns", description = "View a paginated list of all service campaigns/recalls")
     public String list(Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -77,6 +81,8 @@ public class CampaignController {
 
     @GetMapping("/{id}")
     public String view(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         ServiceCampaign campaign = campaignService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Campaign not found"));
         model.addAttribute("campaign", campaign);
@@ -85,6 +91,8 @@ public class CampaignController {
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         ServiceCampaign campaign = campaignService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Campaign not found"));
         model.addAttribute("campaign", campaign);
@@ -105,6 +113,8 @@ public class CampaignController {
             return "evm/campaigns/form";
         }
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             campaignService.updateCampaign(id, campaign);
             redirectAttributes.addFlashAttribute("success", "Campaign updated successfully");
         } catch (Exception e) {
@@ -116,6 +126,8 @@ public class CampaignController {
     @PostMapping("/{id}/activate")
     public String activate(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             campaignService.activateCampaign(id);
             redirectAttributes.addFlashAttribute("success", "Campaign activated");
         } catch (Exception e) {
@@ -127,6 +139,8 @@ public class CampaignController {
     @PostMapping("/{id}/complete")
     public String complete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             campaignService.completeCampaign(id);
             redirectAttributes.addFlashAttribute("success", "Campaign completed");
         } catch (Exception e) {

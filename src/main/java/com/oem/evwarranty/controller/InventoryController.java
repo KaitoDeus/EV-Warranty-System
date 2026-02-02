@@ -11,12 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for Inventory management (Service Center).
  */
 @Controller
 @RequestMapping("/sc/inventory")
+@Tag(name = "Inventory Management", description = "Operations for tracking and adjusting part stock at Service Centers")
 public class InventoryController {
 
     private final InventoryService inventoryService;
@@ -32,6 +35,7 @@ public class InventoryController {
     }
 
     @GetMapping
+    @Operation(summary = "List inventory", description = "View available parts and stock levels at the current service center")
     public String list(Model model, Authentication auth) {
         User user = userService.findByUsername(auth.getName()).orElse(null);
         List<Inventory> inventory;
@@ -51,6 +55,7 @@ public class InventoryController {
     }
 
     @PostMapping("/add")
+    @Operation(summary = "Add stock", description = "Increase inventory level for a specific part at the user's service center")
     public String addStock(@RequestParam Long partId,
             @RequestParam int quantity,
             Authentication auth,
@@ -58,6 +63,8 @@ public class InventoryController {
         try {
             User user = userService.findByUsername(auth.getName()).orElse(null);
             String serviceCenter = user != null ? user.getServiceCenter() : "DEFAULT";
+            if (partId == null)
+                throw new IllegalArgumentException("Part ID cannot be null");
             inventoryService.createOrUpdateInventory(partId, serviceCenter, quantity);
             redirectAttributes.addFlashAttribute("success", "Stock added successfully");
         } catch (Exception e) {
@@ -71,6 +78,8 @@ public class InventoryController {
             @RequestParam int adjustment,
             RedirectAttributes redirectAttributes) {
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             inventoryService.adjustStock(id, adjustment);
             redirectAttributes.addFlashAttribute("success", "Stock adjusted successfully");
         } catch (Exception e) {

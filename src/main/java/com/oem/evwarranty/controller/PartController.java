@@ -11,12 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for Part management (EVM Staff).
  */
 @Controller
 @RequestMapping("/evm/parts")
+@Tag(name = "Part Catalog", description = "Operations for managing the master catalog of electric vehicle parts and components")
 public class PartController {
 
     private final PartService partService;
@@ -26,6 +29,7 @@ public class PartController {
     }
 
     @GetMapping
+    @Operation(summary = "List parts", description = "View a paginated list of all parts in the master catalog")
     public String list(Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -66,7 +70,10 @@ public class PartController {
     }
 
     @GetMapping("/{id}")
+    @SuppressWarnings("null")
     public String view(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         Part part = partService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Part not found"));
         model.addAttribute("part", part);
@@ -74,7 +81,10 @@ public class PartController {
     }
 
     @GetMapping("/{id}/edit")
+    @SuppressWarnings("null")
     public String editForm(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         Part part = partService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Part not found"));
         model.addAttribute("part", part);
@@ -93,6 +103,8 @@ public class PartController {
             return "evm/parts/form";
         }
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             partService.updatePart(id, part);
             redirectAttributes.addFlashAttribute("success", "Part updated successfully");
         } catch (IllegalArgumentException e) {
@@ -103,6 +115,8 @@ public class PartController {
 
     @PostMapping("/{id}/toggle")
     public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         partService.togglePartStatus(id);
         redirectAttributes.addFlashAttribute("success", "Part status updated");
         return "redirect:/evm/parts";

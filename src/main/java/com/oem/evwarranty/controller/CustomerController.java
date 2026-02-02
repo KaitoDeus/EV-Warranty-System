@@ -11,12 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for Customer management (Service Center).
  */
 @Controller
 @RequestMapping("/sc/customers")
+@Tag(name = "Customer Management", description = "Operations for managing vehicle owners and customers")
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -26,6 +29,7 @@ public class CustomerController {
     }
 
     @GetMapping
+    @Operation(summary = "List customers", description = "Retrieve a paginated list of customers with search filtering")
     public String list(Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -62,6 +66,8 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public String view(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         Customer customer = customerService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         model.addAttribute("customer", customer);
@@ -70,6 +76,8 @@ public class CustomerController {
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
         Customer customer = customerService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         model.addAttribute("customer", customer);
@@ -85,6 +93,8 @@ public class CustomerController {
             return "sc/customers/form";
         }
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             customerService.updateCustomer(id, customer);
             redirectAttributes.addFlashAttribute("success", "Customer updated successfully");
         } catch (IllegalArgumentException e) {
@@ -96,6 +106,8 @@ public class CustomerController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            if (id == null)
+                throw new IllegalArgumentException("ID cannot be null");
             customerService.deleteCustomer(id);
             redirectAttributes.addFlashAttribute("success", "Customer deleted successfully");
         } catch (Exception e) {

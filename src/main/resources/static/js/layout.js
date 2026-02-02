@@ -1,61 +1,20 @@
 /**
- * EV Warranty Management System - Main JavaScript
+ * EV Warranty Management System - Layout JavaScript
+ * Handles common functionality like Sidebar, Toasts, and Confirmations.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize all components
     initToasts();
     initConfirmDialogs();
     initSearchDebounce();
     initFormValidation();
     initSidebarToggle();
-    initTheme();
 });
-
-/**
- * Theme Management
- */
-function initTheme() {
-    // Check for saved theme preference or system preference
-    const savedTheme = localStorage.getItem('theme');
-    const systemTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    
-    // Default to dark if no preference (as per original design)
-    const currentTheme = savedTheme || 'dark'; // explicit default
-    
-    // Apply theme
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    updateThemeIcon(currentTheme);
-}
-
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
-}
-
-function updateThemeIcon(theme) {
-    const icon = document.getElementById('theme-icon');
-    if (icon) {
-        // If theme is light, show moon (to switch to dark), else sun
-        if (theme === 'light') {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        } else {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        }
-    }
-}
 
 /**
  * Toast Notifications
  */
 function initToasts() {
-    // Auto-hide alerts after 5 seconds
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
         setTimeout(() => {
@@ -65,7 +24,7 @@ function initToasts() {
     });
 }
 
-// Add slideOut animation
+// Add slideOut animation style dynamically
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideOut {
@@ -75,9 +34,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-/**
- * Show toast notification
- */
 function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `alert alert-${type}`;
@@ -97,11 +53,12 @@ function showToast(message, type = 'success') {
 
 /**
  * Confirm Dialogs
+ * Usage: <button data-confirm="Are you sure you want to delete this?">Delete</button>
  */
 function initConfirmDialogs() {
     document.querySelectorAll('[data-confirm]').forEach(element => {
         element.addEventListener('click', function (e) {
-            const message = this.getAttribute('data-confirm') || 'Are you sure?';
+            const message = this.getAttribute('data-confirm') || 'Bạn có chắc chắn muốn thực hiện hành động này không?';
             if (!confirm(message)) {
                 e.preventDefault();
             }
@@ -111,6 +68,7 @@ function initConfirmDialogs() {
 
 /**
  * Search Debounce
+ * Usage: <input class="search-input" ...>
  */
 function initSearchDebounce() {
     const searchInputs = document.querySelectorAll('.search-input');
@@ -126,7 +84,7 @@ function initSearchDebounce() {
 }
 
 /**
- * Form Validation
+ * Basic Form Validation
  */
 function initFormValidation() {
     const forms = document.querySelectorAll('form[data-validate]');
@@ -146,7 +104,7 @@ function initFormValidation() {
 
             if (!isValid) {
                 e.preventDefault();
-                showToast('Please fill in all required fields', 'error');
+                showToast('Vui lòng điền đầy đủ các thông tin bắt buộc', 'error');
             }
         });
     });
@@ -176,74 +134,25 @@ function initSidebarToggle() {
 }
 
 /**
- * VIN Validation
+ * Utility: Format Currency (VND)
  */
-function validateVIN(vin) {
-    if (!vin || vin.length !== 17) return false;
-    return /^[A-HJ-NPR-Z0-9]{17}$/.test(vin.toUpperCase());
-}
-
-/**
- * Format Currency
- */
-function formatCurrency(amount, currency = 'USD') {
-    return new Intl.NumberFormat('en-US', {
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
-        currency: currency
+        currency: 'VND'
     }).format(amount);
 }
 
 /**
- * Format Date
- */
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
-}
-
-/**
- * Loading State for Buttons
+ * Utility: Set Button Loading State
  */
 function setButtonLoading(button, loading = true) {
     if (loading) {
         button.disabled = true;
         button.dataset.originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
     } else {
         button.disabled = false;
         button.innerHTML = button.dataset.originalText;
     }
 }
-
-/**
- * Modal Functions
- */
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-}
-
-// Close modal on escape key
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-        const activeModal = document.querySelector('.modal.active');
-        if (activeModal) {
-            closeModal(activeModal.id);
-        }
-    }
-});

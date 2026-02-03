@@ -26,7 +26,6 @@ public class ServiceCampaign {
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -47,14 +46,12 @@ public class ServiceCampaign {
     @Column(name = "affected_models", length = 500)
     private String affectedModels;
 
-    @Lob
     @Column(name = "affected_vins", columnDefinition = "TEXT")
     private String affectedVins;
 
     @Column(name = "affected_parts", length = 500)
     private String affectedParts;
 
-    @Lob
     @Column(name = "remedy_description", columnDefinition = "TEXT")
     private String remedyDescription;
 

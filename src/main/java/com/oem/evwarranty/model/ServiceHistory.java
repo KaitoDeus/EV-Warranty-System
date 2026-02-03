@@ -28,7 +28,6 @@ public class ServiceHistory {
     @Column(name = "service_type", nullable = false, length = 30)
     private ServiceType serviceType;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -62,7 +61,6 @@ public class ServiceHistory {
     @Column(name = "completion_date")
     private LocalDateTime completionDate;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String notes;
 

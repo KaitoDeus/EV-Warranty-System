@@ -46,10 +46,10 @@ public class VehiclePart {
     @Builder.Default
     private PartStatus status = PartStatus.ACTIVE;
 
-    @Column(name = "installed_by", length = 100)
-    private String installedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "installed_by")
+    private User installedBy;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String notes;
 

@@ -39,7 +39,6 @@ public class ClaimAttachment {
     @Column(name = "attachment_type", length = 30)
     private AttachmentType attachmentType;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 

@@ -44,15 +44,12 @@ public class WarrantyClaim {
     @Builder.Default
     private ClaimStatus status = ClaimStatus.DRAFT;
 
-    @Lob
     @Column(name = "failure_description", columnDefinition = "TEXT", nullable = false)
     private String failureDescription;
 
-    @Lob
     @Column(name = "diagnosis_notes", columnDefinition = "TEXT")
     private String diagnosisNotes;
 
-    @Lob
     @Column(name = "repair_description", columnDefinition = "TEXT")
     private String repairDescription;
 
@@ -95,7 +92,6 @@ public class WarrantyClaim {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    @Lob
     @Column(name = "rejection_reason", columnDefinition = "TEXT")
     private String rejectionReason;
 

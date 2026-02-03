@@ -22,7 +22,6 @@ public class WarrantyPolicy {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 

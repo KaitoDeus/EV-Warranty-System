@@ -1,66 +1,60 @@
 version: "3.8"
 
 services:
-  # MySQL Database
-  mysql:
-    image: mysql:8.0
-    container_name: evwarranty-mysql
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: evwarranty-db
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: evwarranty
-      MYSQL_USER: evwarranty
-      MYSQL_PASSWORD: evwarranty123
+      POSTGRES_DB: evwarranty
+      POSTGRES_USER: evwarranty
+      POSTGRES_PASSWORD: evwarranty123
     ports:
-      - "3306:3306"
+      - "5433:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - evwarranty-network
     healthcheck:
-      test:
-        [
-          "CMD",
-          "mysqladmin",
-          "ping",
-          "-h",
-          "localhost",
-          "-u",
-          "root",
-          "-proot123",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U evwarranty -d evwarranty"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
 
-  # Spring Boot Backend (Dev Mode with Hot Reload)
-  # Spring Boot Backend (Production Mode)
+  # Spring Boot Backend
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: maven:3.9-eclipse-temurin-17
+    working_dir: /app
     container_name: evwarranty-app
-    image: ev-warranty-system:latest
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: evwarranty
-      MYSQL_USER: evwarranty
-      MYSQL_PASSWORD: evwarranty123
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: evwarranty
+      POSTGRES_USER: evwarranty
+      POSTGRES_PASSWORD: evwarranty123
+      # DevTools settings
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_THYMELEAF_CACHE: "false"
     ports:
       - "8080:8080"
+    volumes:
+      - .:/app
+      - maven_repo:/root/.m2
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
     networks:
       - evwarranty-network
+    # Use spring-boot:run for hot reload instead of running the pre-built JAR
+    command: mvn spring-boot:run -Dspring-boot.run.profiles=docker
 
 networks:
   evwarranty-network:
     driver: bridge
 
 volumes:
-  mysql_data:
+  postgres_data:
   maven_repo:

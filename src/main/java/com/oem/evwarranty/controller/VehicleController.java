@@ -82,6 +82,8 @@ public class VehicleController {
         Vehicle vehicle = vehicleService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
         model.addAttribute("vehicle", vehicle);
+        model.addAttribute("extraCss", "/css/pages/ai-prediction.css");
+        model.addAttribute("extraJs", "/js/ai-prediction.js");
         return "sc/vehicles/view";
     }
 

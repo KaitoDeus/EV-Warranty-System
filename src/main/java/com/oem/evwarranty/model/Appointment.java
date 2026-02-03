@@ -34,7 +34,6 @@ public class Appointment {
     @Column(name = "service_center", length = 100)
     private String serviceCenter;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String notes;
 

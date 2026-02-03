@@ -29,7 +29,6 @@ public class Part {
     @Column(nullable = false, length = 200)
     private String name;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 

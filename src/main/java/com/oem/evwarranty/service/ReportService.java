@@ -86,6 +86,30 @@ public class ReportService {
 
         stats.put("lowStockItems", inventoryRepository.findLowStockItemsByServiceCenter(serviceCenter).size());
 
+        // Localized Claim Stats Breakdown
+        Map<String, Long> claimStats = new HashMap<>();
+        for (WarrantyClaim.ClaimStatus status : WarrantyClaim.ClaimStatus.values()) {
+            claimStats.put(status.name(), claimRepository.findByServiceCenter(serviceCenter).stream()
+                    .filter(c -> c.getStatus() == status)
+                    .count());
+        }
+        stats.put("claimStats", claimStats);
+
+        // Include Global Stats for context (Vehicles/Campaigns are often global)
+        stats.put("vehicleStats", getVehicleStatsByStatus());
+        stats.put("campaignStats", getCampaignStatsByStatus()); // SC needs to see all campaigns
+
+        // Basic counters (matching the keys expected by the frontend/admin view)
+        stats.put("pendingClaims", claimStats.get(WarrantyClaim.ClaimStatus.SUBMITTED.name()) +
+                claimStats.get(WarrantyClaim.ClaimStatus.UNDER_REVIEW.name()));
+        stats.put("completedClaims", claimStats.get(WarrantyClaim.ClaimStatus.COMPLETED.name()));
+        stats.put("inProgressClaims", claimStats.get(WarrantyClaim.ClaimStatus.IN_PROGRESS.name()));
+
+        stats.put("totalVehicles", vehicleRepository.count()); // Global vehicle count
+        stats.put("activeCampaigns", campaignRepository.countByStatus(ServiceCampaign.CampaignStatus.ACTIVE));
+
+        stats.put("lowStockItems", inventoryRepository.findLowStockItemsByServiceCenter(serviceCenter).size());
+
         return stats;
     }
 

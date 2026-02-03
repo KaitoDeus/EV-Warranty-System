@@ -4,7 +4,7 @@
 
 <body>
     <div th:fragment="content">
-        <!-- Stats Grid - Dynamic with API -->
+        <!-- Stats Grid - Server Side Rendered -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon primary">
@@ -12,9 +12,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Tổng xe</h3>
-                    <div class="stat-value" id="stat-total-vehicles">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['totalVehicles']}">0</div>
                 </div>
             </div>
 
@@ -24,9 +22,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Yêu cầu chờ duyệt</h3>
-                    <div class="stat-value" id="stat-pending-claims">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['pendingClaims']}">0</div>
                 </div>
             </div>
 
@@ -36,9 +32,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Đang sửa chữa</h3>
-                    <div class="stat-value" id="stat-in-progress">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['inProgressClaims']}">0</div>
                 </div>
             </div>
 
@@ -48,9 +42,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Hoàn thành</h3>
-                    <div class="stat-value" id="stat-completed">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['completedClaims']}">0</div>
                 </div>
             </div>
         </div>
@@ -73,6 +65,59 @@
                 <a th:href="@{/sc/inventory}" class="btn btn-secondary">
                     <i class="fas fa-boxes"></i> Kho
                 </a>
+            </div>
+        </div>
+
+        <!-- Claims Summary Chart -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">Thống kê yêu cầu bảo hành (Logic SC Staff)</h3>
+            </div>
+            <div style="padding: 1rem;">
+                <div class="summary-bars">
+                    <div th:each="entry : ${claimStats}" style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="width: 180px;" th:text="${entry.key}">Status</span>
+                        <div style="flex: 1; height: 20px; background: #e9ecef; border-radius: 4px; margin: 0 10px;">
+                            <div style="height: 100%; background-color: var(--primary); border-radius: 4px;"
+                                 th:styleappend="'width: ' + (${stats['totalClaims']} > 0 ? (${entry.value} * 100.0 / ${stats['totalClaims']}) : 0) + '%'">
+                            </div>
+                        </div>
+                        <span style="width: 50px; text-align: right;" th:text="${entry.value}">0</span>
+                    </div>
+                </div>
+                <div th:if="${stats['totalClaims'] == 0}" class="text-muted text-center">Chưa có dữ liệu</div>
+            </div>
+        </div>
+
+        <!-- System Overview -->
+        <div class="row" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+            <div class="card" style="flex: 1;">
+                <div class="card-header">
+                    <h3 class="card-title">Xe theo trạng thái</h3>
+                </div>
+                <div style="padding: 1rem;">
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li th:each="entry : ${vehicleStats}" 
+                            style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                            <span th:text="${entry.key}">Status</span>
+                            <strong th:text="${entry.value}">0</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card" style="flex: 1;">
+                <div class="card-header">
+                    <h3 class="card-title">Chiến dịch theo trạng thái</h3>
+                </div>
+                <div style="padding: 1rem;">
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li th:each="entry : ${campaignStats}" 
+                            style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                            <span th:text="${entry.key}">Status</span>
+                            <strong th:text="${entry.value}">0</strong>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -131,116 +176,94 @@
                 </table>
             </div>
         </div>
+
+
+        <script th:inline="javascript">
+            $(function() {
+                // Load tables from API
+                loadRecentVehicles();
+                loadRecentClaims();
+            });
+
+            function loadRecentVehicles() {
+                API.Vehicles.getAll(0, 5)
+                    .then(function(response) {
+                        if (response.success && response.data) {
+                            renderVehiclesTable(response.data);
+                        }
+                    })
+                    .catch(function(error) {
+                        $('#recent-vehicles-table tbody').html(
+                            '<tr><td colspan="5" class="text-center text-danger">Lỗi: ' + error.message + '</td></tr>'
+                        );
+                    });
+            }
+
+            function renderVehiclesTable(vehicles) {
+                var $tbody = $('#recent-vehicles-table tbody');
+                $tbody.empty();
+
+                if (!vehicles || vehicles.length === 0) {
+                    $tbody.html('<tr><td colspan="5" class="text-center text-muted">Chưa có xe nào</td></tr>');
+                    return;
+                }
+
+                vehicles.forEach(function(v) {
+                    var statusClass = 'status-' + (v.status ? v.status.toLowerCase() : 'active');
+                    var row = '<tr>' +
+                        '<td><a href="/sc/vehicles/' + v.id + '">' + v.vin + '</a></td>' +
+                        '<td>' + v.make + ' ' + v.model + '</td>' +
+                        '<td>' + v.year + '</td>' +
+                        '<td>' + (v.customerName ? v.customerName : 'N/A') + '</td>' +
+                        '<td><span class="badge ' + statusClass + '">' + v.status + '</span></td>' +
+                        '</tr>';
+                    $tbody.append(row);
+                });
+            }
+
+            function loadRecentClaims() {
+                API.Claims.getAll(0, 5)
+                    .then(function(response) {
+                        if (response.success && response.data) {
+                            renderClaimsTable(response.data);
+                        }
+                    })
+                    .catch(function(error) {
+                        $('#recent-claims-table tbody').html(
+                            '<tr><td colspan="5" class="text-center text-danger">Lỗi: ' + error.message + '</td></tr>'
+                        );
+                    });
+            }
+
+            function renderClaimsTable(claims) {
+                var $tbody = $('#recent-claims-table tbody');
+                $tbody.empty();
+
+                if (!claims || claims.length === 0) {
+                    $tbody.html('<tr><td colspan="5" class="text-center text-muted">Chưa có yêu cầu nào</td></tr>');
+                    return;
+                }
+
+                claims.forEach(function(c) {
+                    var statusClass = 'status-' + (c.status ? c.status.toLowerCase().replace('_', '-') : 'draft');
+                    var row = '<tr>' +
+                        '<td><a href="/sc/claims/' + c.id + '">' + c.claimNumber + '</a></td>' +
+                        '<td>' + (c.vehicle ? c.vehicle.vin : 'N/A') + '</td>' +
+                        '<td><span class="badge ' + statusClass + '">' + c.status + '</span></td>' +
+                        '<td>' + truncate(c.failureDescription, 40) + '</td>' +
+                        '<td>' + API.UI.formatDate(c.createdAt) + '</td>' +
+                        '</tr>';
+                    $tbody.append(row);
+                });
+            }
+
+            function truncate(str, len) {
+                if (!str) return '-';
+                return str.length > len ? str.substring(0, len) + '...' : str;
+            }
+        </script>
     </div>
-
-    <!-- Dashboard AJAX Script -->
-    <script th:inline="javascript">
-        $(function() {
-            // Load dashboard stats from API
-            loadDashboardStats();
-            loadRecentVehicles();
-            loadRecentClaims();
-
-            // Refresh every 30 seconds
-            setInterval(function() {
-                loadDashboardStats();
-            }, 30000);
-        });
-
-        function loadDashboardStats() {
-            API.Reports.getDashboard()
-                .then(function(response) {
-                    if (response.success && response.data) {
-                        var stats = response.data;
-                        $('#stat-total-vehicles').text(stats.totalVehicles || 0);
-                        $('#stat-pending-claims').text(stats.pendingClaims || 0);
-                        $('#stat-in-progress').text(stats.inProgressClaims || 0);
-                        $('#stat-completed').text(stats.completedClaims || 0);
-                    }
-                })
-                .catch(function(error) {
-                    console.error('Failed to load stats:', error);
-                    $('#stat-total-vehicles, #stat-pending-claims, #stat-in-progress, #stat-completed').text('-');
-                });
-        }
-
-        function loadRecentVehicles() {
-            API.Vehicles.getAll(0, 5)
-                .then(function(response) {
-                    if (response.success && response.data) {
-                        renderVehiclesTable(response.data);
-                    }
-                })
-                .catch(function(error) {
-                    $('#recent-vehicles-table tbody').html(
-                        '<tr><td colspan="5" class="text-center text-danger">Lỗi: ' + error.message + '</td></tr>'
-                    );
-                });
-        }
-
-        function renderVehiclesTable(vehicles) {
-            var $tbody = $('#recent-vehicles-table tbody');
-            $tbody.empty();
-
-            if (!vehicles || vehicles.length === 0) {
-                $tbody.html('<tr><td colspan="5" class="text-center text-muted">Chưa có xe nào</td></tr>');
-                return;
-            }
-
-            vehicles.forEach(function(v) {
-                var statusClass = 'status-' + (v.status ? v.status.toLowerCase() : 'active');
-                var row = '<tr>' +
-                    '<td><a href="/sc/vehicles/' + v.id + '">' + v.vin + '</a></td>' +
-                    '<td>' + v.make + ' ' + v.model + '</td>' +
-                    '<td>' + v.year + '</td>' +
-                    '<td>' + (v.customer ? v.customer.fullName : 'N/A') + '</td>' +
-                    '<td><span class="badge ' + statusClass + '">' + v.status + '</span></td>' +
-                    '</tr>';
-                $tbody.append(row);
-            });
-        }
-
-        function loadRecentClaims() {
-            API.Claims.getAll(0, 5)
-                .then(function(response) {
-                    if (response.success && response.data) {
-                        renderClaimsTable(response.data);
-                    }
-                })
-                .catch(function(error) {
-                    $('#recent-claims-table tbody').html(
-                        '<tr><td colspan="5" class="text-center text-danger">Lỗi: ' + error.message + '</td></tr>'
-                    );
-                });
-        }
-
-        function renderClaimsTable(claims) {
-            var $tbody = $('#recent-claims-table tbody');
-            $tbody.empty();
-
-            if (!claims || claims.length === 0) {
-                $tbody.html('<tr><td colspan="5" class="text-center text-muted">Chưa có yêu cầu nào</td></tr>');
-                return;
-            }
-
-            claims.forEach(function(c) {
-                var statusClass = 'status-' + (c.status ? c.status.toLowerCase().replace('_', '-') : 'draft');
-                var row = '<tr>' +
-                    '<td><a href="/sc/claims/' + c.id + '">' + c.claimNumber + '</a></td>' +
-                    '<td>' + (c.vehicle ? c.vehicle.vin : 'N/A') + '</td>' +
-                    '<td><span class="badge ' + statusClass + '">' + c.status + '</span></td>' +
-                    '<td>' + truncate(c.failureDescription, 40) + '</td>' +
-                    '<td>' + API.UI.formatDate(c.createdAt) + '</td>' +
-                    '</tr>';
-                $tbody.append(row);
-            });
-        }
-
-        function truncate(str, len) {
-            if (!str) return '-';
-            return str.length > len ? str.substring(0, len) + '...' : str;
-        }
-    </script>
+    </div>
 </body>
 
 </html>

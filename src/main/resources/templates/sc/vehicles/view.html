@@ -73,6 +73,25 @@
             </div>
         </div>
 
+        <!-- AI Failure Prediction -->
+        <div class="card ai-prediction-section mb-4">
+            <div class="ai-header">
+                <h3>
+                    <i class="fas fa-microchip ai-icon-pulse"></i>
+                    AI Failure Analysis
+                </h3>
+                <span class="badge badge-light" style="background: rgba(255,255,255,0.2); color: white !important;">BETA</span>
+            </div>
+            <div id="ai-prediction-results" th:data-vehicle-id="${vehicle.id}">
+                <div class="ai-loader">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="ai-loading-text">ĐANG PHÂN TÍCH DỮ LIỆU LỊCH SỬ...</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Warranty Claims -->
         <div class="card">
             <div class="card-header">

@@ -158,6 +158,12 @@ const API = {
         get: function(id) {
             return API.request('/campaigns/' + id);
         }
+    },
+
+    AI: {
+        getPredictions: function(vehicleId) {
+            return API.request('/ai/predict/' + vehicleId);
+        }
     }
 };
 

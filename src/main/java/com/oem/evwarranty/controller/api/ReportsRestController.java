@@ -22,13 +22,16 @@ public class ReportsRestController {
     private final ReportService reportService;
     private final AIPredictionService aiService;
     private final PerformanceService performanceService;
+    private final com.oem.evwarranty.service.UserService userService;
 
     public ReportsRestController(ReportService reportService,
             AIPredictionService aiService,
-            PerformanceService performanceService) {
+            PerformanceService performanceService,
+            com.oem.evwarranty.service.UserService userService) {
         this.reportService = reportService;
         this.aiService = aiService;
         this.performanceService = performanceService;
+        this.userService = userService;
     }
 
     @GetMapping("/dashboard")

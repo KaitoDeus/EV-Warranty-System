@@ -45,10 +45,22 @@ public class DashboardController {
             model.addAttribute("vehicleStats", reportService.getVehicleStatsByStatus());
             return "dashboard/admin";
         } else if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EVM_STAFF"))) {
+            model.addAttribute("claimStats", reportService.getClaimStatsByStatus());
+            model.addAttribute("campaignStats", reportService.getCampaignStatsByStatus());
+            model.addAttribute("vehicleStats", reportService.getVehicleStatsByStatus());
             return "dashboard/evm";
         } else if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SC_STAFF"))) {
             if (user != null && user.getServiceCenter() != null) {
-                stats.putAll(reportService.getServiceCenterStats(user.getServiceCenter()));
+                Map<String, Object> scStats = reportService.getServiceCenterStats(user.getServiceCenter());
+                stats.putAll(scStats);
+                model.addAttribute("claimStats", scStats.get("claimStats"));
+                model.addAttribute("vehicleStats", scStats.get("vehicleStats"));
+                model.addAttribute("campaignStats", scStats.get("campaignStats"));
+            } else {
+                // Fallback if no SC assigned
+                model.addAttribute("claimStats", reportService.getClaimStatsByStatus());
+                model.addAttribute("campaignStats", reportService.getCampaignStatsByStatus());
+                model.addAttribute("vehicleStats", reportService.getVehicleStatsByStatus());
             }
             return "dashboard/sc-staff";
         } else if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SC_TECHNICIAN"))) {

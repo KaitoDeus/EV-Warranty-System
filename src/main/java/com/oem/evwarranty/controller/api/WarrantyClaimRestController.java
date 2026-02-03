@@ -56,4 +56,15 @@ public class WarrantyClaimRestController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(results);
     }
+
+    @GetMapping("/pending")
+    @Operation(summary = "Get pending claims for approval")
+    public ResponseEntity<Page<WarrantyClaimDTO>> getPendingClaims(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<WarrantyClaimDTO> claims = claimService
+                .findPendingClaims(PageRequest.of(page, size, Sort.by("createdAt").ascending()))
+                .map(claimMapper::toDTO);
+        return ResponseEntity.ok(claims);
+    }
 }

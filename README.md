@@ -34,8 +34,8 @@ Dự án được xây dựng trên nền tảng Java Enterprise hiện đại, 
   - JavaScript: jQuery, **API Client pattern** cho các module bảng biểu động.
   - Icons: FontAwesome 6
 - **Database:**
-  - Production: **MySQL 8.0**
-  - Development: H2 In-Memory
+  - Database Engine: **MySQL 8.0**
+  - Schema Management: Spring SQL Init (init.sql)
 - **DevOps:**
   - Containerization: **Docker**
   - Orchestration: **Docker Compose**
@@ -59,8 +59,9 @@ Dự án được xây dựng trên nền tảng Java Enterprise hiện đại, 
 
 **Yêu cầu:** Java 17 SDK và Maven 3.8+.
 
-1.  Cài đặt cơ sở dữ liệu MySQL và cập nhật thông tin trong `application.yml` (hoặc sử dụng H2 mặc định).
-2.  Chạy ứng dụng bằng Maven:
+1.  Cài đặt cơ sở dữ liệu MySQL và tạo database `evwarranty`.
+2.  Cập nhật thông tin kết nối (username/password) trong `src/main/resources/application.properties`.
+3.  Chạy ứng dụng bằng Maven:
     ```bash
     mvn spring-boot:run
     ```

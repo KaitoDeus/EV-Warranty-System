@@ -25,9 +25,22 @@ public class AuthController {
     }
 
     @GetMapping("/error/403")
-    public String accessDenied(Model model) {
-        model.addAttribute("error", "Access Denied");
-        model.addAttribute("message", "You don't have permission to access this resource.");
+    public String accessDenied() {
         return "error/403";
+    }
+
+    @GetMapping("/error/404")
+    public String notFound() {
+        return "error/404";
+    }
+
+    @GetMapping("/error/500")
+    public String serverError() {
+        return "error/500";
+    }
+
+    @GetMapping("/error/400")
+    public String badRequest() {
+        return "error/400";
     }
 }

@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>403 - Truy cập bị từ chối</title>
+    <title>500 - Lỗi máy chủ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/error.css}">
     <style>
-        .error-icon { background: linear-gradient(135deg, #f87171, #ef4444); -webkit-background-clip: text; background-clip: text; }
-        .error-body { background: radial-gradient(circle at top right, #450a0a, #0f172a); }
+        .error-icon { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; background-clip: text; }
+        .error-body { background: radial-gradient(circle at top right, #431407, #0f172a); }
     </style>
 </head>
 <body class="error-body">
     <div class="error-container">
         <div class="error-icon">
-            <i class="fas fa-user-shield"></i>
+            <i class="fas fa-tools"></i>
         </div>
-        <div class="error-code">403</div>
-        <h2 class="error-title">Truy cập bị giới hạn</h2>
+        <div class="error-code">500</div>
+        <h2 class="error-title">Lỗi hệ thống</h2>
         <p class="error-message">
-            Khu vực này yêu cầu quyền hành cao hơn. 
-            Tài khoản hiện tại của bạn không được phép thâm nhập vào hệ thống này.
+            Chúng tôi đang gặp sự cố kỹ thuật bên trong máy chủ. 
+            Đội ngũ kỹ thuật đã được thông báo. Vui lòng thử lại sau giây lát.
         </p>
         <a href="/dashboard" class="btn-back">
-            <i class="fas fa-home"></i> Trở về Dashboard
+            <i class="fas fa-sync"></i> Tải lại trang chủ
         </a>
     </div>
 </body>

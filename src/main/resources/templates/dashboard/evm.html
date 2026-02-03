@@ -4,7 +4,7 @@
 
 <body>
     <div th:fragment="content">
-        <!-- Stats Grid - Dynamic with API -->
+        <!-- Stats Grid - Server Side Rendered -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon warning">
@@ -12,9 +12,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Chờ duyệt</h3>
-                    <div class="stat-value" id="stat-pending-claims">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['pendingClaims']}">0</div>
                 </div>
             </div>
 
@@ -24,9 +22,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Đã duyệt</h3>
-                    <div class="stat-value" id="stat-approved-claims">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['approvedClaims']}">0</div>
                 </div>
             </div>
 
@@ -36,9 +32,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Chiến dịch đang chạy</h3>
-                    <div class="stat-value" id="stat-active-campaigns">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['activeCampaigns']}">0</div>
                 </div>
             </div>
 
@@ -48,9 +42,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Tổng phụ tùng</h3>
-                    <div class="stat-value" id="stat-total-parts">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                    <div class="stat-value" th:text="${stats['totalParts']}">0</div>
                 </div>
             </div>
         </div>
@@ -70,6 +62,27 @@
                 <a th:href="@{/evm/parts/new}" class="btn btn-secondary">
                     <i class="fas fa-plus"></i> Thêm phụ tùng
                 </a>
+            </div>
+        </div>
+
+        <!-- Claims Summary Chart -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">Thống kê yêu cầu bảo hành</h3>
+            </div>
+            <div style="padding: 1rem;">
+                <div class="summary-bars">
+                    <div th:each="entry : ${claimStats}" style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="width: 180px;" th:text="${entry.key}">Status</span>
+                        <div style="flex: 1; height: 20px; background: #e9ecef; border-radius: 4px; margin: 0 10px;">
+                            <div style="height: 100%; background-color: var(--primary); border-radius: 4px;"
+                                 th:styleappend="'width: ' + (${stats['totalClaims']} > 0 ? (${entry.value} * 100.0 / ${stats['totalClaims']}) : 0) + '%'">
+                            </div>
+                        </div>
+                        <span style="width: 50px; text-align: right;" th:text="${entry.value}">0</span>
+                    </div>
+                </div>
+                <div th:if="${stats['totalClaims'] == 0}" class="text-muted text-center">Chưa có dữ liệu</div>
             </div>
         </div>
 
@@ -128,34 +141,14 @@
                 </table>
             </div>
         </div>
-    </div>
-
+    
     <!-- EVM Dashboard AJAX Script -->
     <script th:inline="javascript">
         $(function() {
-            loadDashboardStats();
+            // Load tables
             loadPendingClaims();
             loadActiveCampaigns();
-
-            // Refresh stats every 30 seconds
-            setInterval(loadDashboardStats, 30000);
         });
-
-        function loadDashboardStats() {
-            API.Reports.getDashboard()
-                .then(function(response) {
-                    if (response.success && response.data) {
-                        var stats = response.data;
-                        $('#stat-pending-claims').text(stats.pendingClaims || 0);
-                        $('#stat-approved-claims').text(stats.approvedClaims || 0);
-                        $('#stat-active-campaigns').text(stats.activeCampaigns || 0);
-                        $('#stat-total-parts').text(stats.totalParts || 0);
-                    }
-                })
-                .catch(function(error) {
-                    console.error('Failed to load stats:', error);
-                });
-        }
 
         function loadPendingClaims() {
             API.Claims.getPending(0, 5)
@@ -248,12 +241,10 @@
         $(document).on('click', '.btn-approve-claim', function() {
             var claimId = $(this).data('claim-id');
             if (confirm('Bạn có chắc muốn PHÊ DUYỆT yêu cầu này?')) {
-                // Get current user ID from somewhere (could be stored in page or fetched)
-                API.Claims.approve(claimId, 1) // Using admin ID for now
+                API.Claims.approve(claimId, 1) // Using default admin ID
                     .then(function() {
                         API.UI.showSuccess('Đã phê duyệt yêu cầu!');
-                        loadPendingClaims();
-                        loadDashboardStats();
+                        location.reload(); // Reload to update stats
                     })
                     .catch(function(err) {
                         API.UI.showError('Lỗi: ' + (err.message || 'Không thể phê duyệt'));
@@ -268,8 +259,7 @@
                 API.Claims.reject(claimId, 1, reason)
                     .then(function() {
                         API.UI.showSuccess('Đã từ chối yêu cầu!');
-                        loadPendingClaims();
-                        loadDashboardStats();
+                        location.reload(); // Reload to update stats
                     })
                     .catch(function(err) {
                         API.UI.showError('Lỗi: ' + (err.message || 'Không thể từ chối'));
@@ -277,6 +267,7 @@
             }
         });
     </script>
+    </div>
 </body>
 
 </html>

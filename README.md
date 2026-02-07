@@ -1,5 +1,13 @@
 # Hệ Thống Quản Lý Bảo Hành Xe Điện (EV Warranty System)
 
+## Mục lục
+
+- [1. Giới Thiệu Sản Phẩm](#1-giới-thiệu-sản-phẩm)
+- [2. Công Nghệ Sử Dụng](#2-công-nghệ-sử-dụng)
+- [3. Hướng Dẫn Cài Đặt và Chạy Ứng Dụng](#3-hướng-dẫn-cài-đặt-và-chạy-ứng-dụng)
+- [4. Quản Lý Cơ Sở Dữ Liệu](#4-quản-lý-cơ-sở-dữ-liệu)
+- [5. Danh Sách Tài Khoản Thử Nghiệm](#5-danh-sách-tài-khoản-thử-nghiệm)
+
 ## 1. Giới Thiệu Sản Phẩm
 
 EV Warranty System là nền tảng quản lý bảo hành chuyên dụng cho hệ sinh thái xe điện, đóng vai trò cầu nối dữ liệu giữa Nhà sản xuất (OEM) và các Trung tâm dịch vụ (Service Centers). Hệ thống giúp chuẩn hóa quy trình tiếp nhận, xử lý yêu cầu bảo hành và quản trị dữ liệu vận hành của phương tiện.
@@ -22,10 +30,26 @@ EV Warranty System là nền tảng quản lý bảo hành chuyên dụng cho h�
 
 Hệ thống được phát triển trên kiến trúc nền tảng Java hiện đại, tập trung vào tính bảo mật và khả năng xử lý dữ liệu tập trung.
 
-- **Backend:** Java 17, Spring Boot 3.2, Spring Security, Spring Data JPA.
-- **Frontend:** Thymeleaf, Bootstrap 5, Custom CSS, jQuery.
-- **Database:** PostgreSQL 15.
-- **Hạ tầng:** Docker, Docker Compose, Maven.
+### Backend
+
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+
+### Frontend
+
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-%23005F0F.svg?style=for-the-badge&logo=Thymeleaf&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+
+### Database
+
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+
+### DevOps & Tools
+
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
 
 ## 3. Hướng Dẫn Cài Đặt và Chạy Ứng Dụng
 

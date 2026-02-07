@@ -62,10 +62,7 @@ Hệ thống được phát triển trên kiến trúc nền tảng Java hiện 
    docker-compose up -d --build
    ```
 
-   _(Lệnh này sẽ tự động tải Java 21, build ứng dụng và khởi tạo Database PostgreSQL 17)_.
-
 2. Truy cập ứng dụng: `http://localhost:8080`.
-   - Database Port: `5432` (nội bộ Docker) được map ra ngoài máy chủ ở cổng `5433` (hoặc `5432` tuỳ `docker-compose.yml`).
 
 ### 4.2. Chạy Thủ Công (Development Mode)
 

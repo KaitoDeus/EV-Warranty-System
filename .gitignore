@@ -38,3 +38,5 @@ Desktop.ini
 *.log
 app_logs.txt
 app_logs_new.txt
+src/main/resources/application.properties
+src/main/resources/application-dev.properties

@@ -3,14 +3,14 @@ version: "3.8"
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: evwarranty-db
     environment:
       POSTGRES_DB: evwarranty
       POSTGRES_USER: evwarranty
       POSTGRES_PASSWORD: evwarranty123
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -25,16 +25,11 @@ services:
 
   # Spring Boot Backend
   app:
-    image: maven:3.9-eclipse-temurin-17
+    image: maven:3.9-eclipse-temurin-21
     working_dir: /app
     container_name: evwarranty-app
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: evwarranty
-      POSTGRES_USER: evwarranty
-      POSTGRES_PASSWORD: evwarranty123
+      SPRING_PROFILES_ACTIVE: dev
       # DevTools settings
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
       SPRING_THYMELEAF_CACHE: "false"
@@ -49,7 +44,7 @@ services:
     networks:
       - evwarranty-network
     # Use spring-boot:run for hot reload instead of running the pre-built JAR
-    command: mvn spring-boot:run -Dspring-boot.run.profiles=docker
+    command: mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 networks:
   evwarranty-network:

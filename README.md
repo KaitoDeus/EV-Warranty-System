@@ -2,11 +2,11 @@
 
 ## Mục lục
 
-- [1. Giới Thiệu Sản Phẩm](#1-giới-thiệu-sản-phẩm)
-- [2. Công Nghệ Sử Dụng](#2-công-nghệ-sử-dụng)
-- [3. Hướng Dẫn Cài Đặt và Chạy Ứng Dụng](#3-hướng-dẫn-cài-đặt-và-chạy-ứng-dụng)
-- [4. Quản Lý Cơ Sở Dữ Liệu](#4-quản-lý-cơ-sở-dữ-liệu)
-- [5. Danh Sách Tài Khoản Thử Nghiệm](#5-danh-sách-tài-khoản-thử-nghiệm)
+1. [Giới Thiệu Sản Phẩm](#1-giới-thiệu-sản-phẩm)
+2. [Công Nghệ Sử Dụng](#2-công-nghệ-sử-dụng)
+3. [Cấu Trúc Cấu Hình (Configuration)](#3-cấu-trúc-cấu-hình-configuration)
+4. [Hướng Dẫn Cài Đặt và Chạy Ứng Dụng (Local)](#4-hướng-dẫn-cài-đặt-và-chạy-ứng-dụng-local)
+5. [Danh Sách Tài Khoản Thử Nghiệm](#5-danh-sách-tài-khoản-thử-nghiệm)
 
 ## 1. Giới Thiệu Sản Phẩm
 
@@ -28,11 +28,11 @@ EV Warranty System là nền tảng quản lý bảo hành chuyên dụng cho h�
 
 ## 2. Công Nghệ Sử Dụng
 
-Hệ thống được phát triển trên kiến trúc nền tảng Java hiện đại, tập trung vào tính bảo mật và khả năng xử lý dữ liệu tập trung.
+Hệ thống được phát triển trên kiến trúc nền tảng Java hiện đại (LTS mới nhất), tập trung vào tính bảo mật và khả năng xử lý dữ liệu tập trung.
 
 ### Backend
 
-![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
 
 ### Frontend
@@ -44,49 +44,53 @@ Hệ thống được phát triển trên kiến trúc nền tảng Java hiện 
 
 ### Database
 
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
 ### DevOps & Tools
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
 
-## 3. Hướng Dẫn Cài Đặt và Chạy Ứng Dụng
+## 3. Cấu Trúc Cấu Hình (Configuration)
 
-### 3.1. Triển khai bằng Docker (Chế độ khuyến dùng)
+Hệ thống sử dụng cơ chế **Profile** của Spring Boot để tách biệt hoàn toàn môi trường Phát triển (Dev) và Sản phẩm (Production).
 
-Yêu cầu máy tính đã cài đặt Docker và Docker Compose.
+| Môi trường       | Profile   | File Cấu Hình                 | Mô tả & Bảo Mật                                                                                                                 |
+| :--------------- | :-------- | :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| **Local IDE**    | `default` | `application.properties`      | Chạy trực tiếp trên máy (IntelliJ/Eclipse). Password DB: `evwarranty123`. **Không push lên Git.**                               |
+| **Local Docker** | `dev`     | `application-dev.properties`  | Chạy bằng `docker-compose`. Password DB: `evwarranty123`. **Không push lên Git.**                                               |
+| **Production**   | `prod`    | `application-prod.properties` | Chạy trên Server (Railway/Render). **Không chứa Password thật.** Sử dụng biến môi trường `${ENV_VAR}`. An toàn để push lên Git. |
 
-1. Truy cập vào thư mục gốc của dự án.
-2. Chạy lệnh để khởi tạo toàn bộ hệ thống (bao gồm App và Database):
+## 4. Hướng Dẫn Cài Đặt và Chạy Ứng Dụng (Local)
+
+### 4.1. Chạy bằng Docker Compose (Khuyên dùng)
+
+Đây là cách nhanh nhất để dựng toàn bộ môi trường (App + Database) mà không cần cài Java/Postgres trên máy.
+
+1. Tại thư mục gốc dự án, chạy lệnh:
+
    ```bash
    docker-compose up -d --build
    ```
-3. Truy cập ứng dụng tại địa chỉ: `http://localhost:8080`.
-4. Cơ sở dữ liệu PostgreSQL sẽ lắng nghe tại cổng `5433` để tránh xung đột với các phiên bản Postgres cài sẵn trên máy.
 
-### 3.2. Chạy cho mục đích phát triển (Development Mode)
+   _(Lệnh này sẽ tự động tải Java 21, build ứng dụng và khởi tạo Database PostgreSQL 17)_.
 
-Nếu bạn cần thực hiện chỉnh sửa mã nguồn và sử dụng tính năng nạp lại nhanh (Hot Reload):
+2. Truy cập ứng dụng: `http://localhost:8080`.
+   - Database Port: `5432` (nội bộ Docker) được map ra ngoài máy chủ ở cổng `5433` (hoặc `5432` tuỳ `docker-compose.yml`).
 
-1. Khởi chạy riêng cơ sở dữ liệu:
+### 4.2. Chạy Thủ Công (Development Mode)
+
+Dành cho việc phát triển và debug code trên IDE.
+
+1. Khởi chạy riêng Database bằng Docker:
    ```bash
    docker-compose up -d evwarranty-db
    ```
-2. Chạy ứng dụng thông qua Maven:
+2. Chạy ứng dụng bằng lệnh Maven hoặc Run trong IDE:
    ```bash
    mvn spring-boot:run
    ```
-
-## 4. Quản Lý Cơ Sở Dữ Liệu
-
-Để kết nối trực tiếp vào cơ sở dữ liệu qua các công cụ như pgAdmin hoặc DBeaver, sử dụng thông tin sau:
-
-- **Host:** localhost
-- **Port:** 5433
-- **Database:** evwarranty
-- **Username:** evwarranty
-- **Password:** evwarranty123
+   _(Lưu ý: Cần cài đặt JDK 21 trên máy để chạy lệnh này)._
 
 ## 5. Danh Sách Tài Khoản Thử Nghiệm
 

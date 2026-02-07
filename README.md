@@ -4,9 +4,8 @@
 
 1. [Giới Thiệu Sản Phẩm](#1-giới-thiệu-sản-phẩm)
 2. [Công Nghệ Sử Dụng](#2-công-nghệ-sử-dụng)
-3. [Cấu Trúc Cấu Hình (Configuration)](#3-cấu-trúc-cấu-hình-configuration)
-4. [Hướng Dẫn Cài Đặt và Chạy Ứng Dụng (Local)](#4-hướng-dẫn-cài-đặt-và-chạy-ứng-dụng-local)
-5. [Danh Sách Tài Khoản Thử Nghiệm](#5-danh-sách-tài-khoản-thử-nghiệm)
+3. [Hướng Dẫn Cài Đặt và Chạy Ứng Dụng (Local)](#3-hướng-dẫn-cài-đặt-và-chạy-ứng-dụng-local)
+4. [Danh Sách Tài Khoản Thử Nghiệm](#4-danh-sách-tài-khoản-thử-nghiệm)
 
 ## 1. Giới Thiệu Sản Phẩm
 
@@ -51,19 +50,9 @@ Hệ thống được phát triển trên kiến trúc nền tảng Java hiện 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
 
-## 3. Cấu Trúc Cấu Hình (Configuration)
+## 3. Hướng Dẫn Cài Đặt và Chạy Ứng Dụng (Local)
 
-Hệ thống sử dụng cơ chế **Profile** của Spring Boot để tách biệt hoàn toàn môi trường Phát triển (Dev) và Sản phẩm (Production).
-
-| Môi trường       | Profile   | File Cấu Hình                 | Mô tả & Bảo Mật                                                                                                                 |
-| :--------------- | :-------- | :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| **Local IDE**    | `default` | `application.properties`      | Chạy trực tiếp trên máy (IntelliJ/Eclipse). Password DB: `evwarranty123`. **Không push lên Git.**                               |
-| **Local Docker** | `dev`     | `application-dev.properties`  | Chạy bằng `docker-compose`. Password DB: `evwarranty123`. **Không push lên Git.**                                               |
-| **Production**   | `prod`    | `application-prod.properties` | Chạy trên Server (Railway/Render). **Không chứa Password thật.** Sử dụng biến môi trường `${ENV_VAR}`. An toàn để push lên Git. |
-
-## 4. Hướng Dẫn Cài Đặt và Chạy Ứng Dụng (Local)
-
-### 4.1. Chạy bằng Docker Compose (Khuyên dùng)
+### 3.1. Chạy bằng Docker Compose (Khuyên dùng)
 
 Đây là cách nhanh nhất để dựng toàn bộ môi trường (App + Database) mà không cần cài Java/Postgres trên máy.
 
@@ -92,7 +81,7 @@ Dành cho việc phát triển và debug code trên IDE.
    ```
    _(Lưu ý: Cần cài đặt JDK 21 trên máy để chạy lệnh này)._
 
-## 5. Danh Sách Tài Khoản Thử Nghiệm
+## 4. Danh Sách Tài Khoản Thử Nghiệm
 
 Bạn có thể sử dụng các tài khoản sau để kiểm tra quy trình nghiệp vụ của từng vai trò:
 

@@ -121,7 +121,7 @@
   outline: none;
   border-color: var(--primary);
   background: var(--bg-dark);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
 }
 
 .login-form .form-group input.form-control::placeholder {

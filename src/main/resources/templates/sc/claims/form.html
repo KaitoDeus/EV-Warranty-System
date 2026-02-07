@@ -15,6 +15,50 @@
                     </select>
                 </div>
 
+                <div class="form-group" id="partSelectionGroup" style="display:none;">
+                    <label for="vehiclePartId">Linh kiện (Chỉ hiển thị các linh kiện đã lắp đặt)</label>
+                    <select id="vehiclePartId" name="vehiclePartId" class="form-control">
+                        <option value="">-- Chọn linh kiện lỗi --</option>
+                        <!-- Options will be populated via AJAX -->
+                    </select>
+                </div>
+
+                <script>
+                    document.getElementById('vehicleId').addEventListener('change', function() {
+                        var vehicleId = this.value;
+                        var partSelect = document.getElementById('vehiclePartId');
+                        var partGroup = document.getElementById('partSelectionGroup');
+                        
+                        partSelect.innerHTML = '<option value="">-- Đang tải... --</option>';
+                        partGroup.style.display = 'block';
+
+                        if (vehicleId) {
+                            fetch('/api/v1/vehicles/' + vehicleId + '/parts')
+                                .then(response => response.json())
+                                .then(data => {
+                                    partSelect.innerHTML = '<option value="">-- Chọn linh kiện lỗi --</option>';
+                                    if (data && data.length > 0) {
+                                        data.forEach(part => {
+                                            var option = document.createElement('option');
+                                            option.value = part.id; // VehiclePart ID
+                                            option.text = part.partName + ' (' + part.serialNumber + ') - ' + part.status;
+                                            partSelect.appendChild(option);
+                                        });
+                                    } else {
+                                        partSelect.innerHTML = '<option value="">-- Không tìm thấy linh kiện --</option>';
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching parts:', error);
+                                    partSelect.innerHTML = '<option value="">-- Lỗi tải dữ liệu --</option>';
+                                });
+                        } else {
+                            partGroup.style.display = 'none';
+                            partSelect.innerHTML = '<option value="">-- Chọn linh kiện lỗi --</option>';
+                        }
+                    });
+                </script>
+
                 <div class="form-group">
                     <label for="failureDescription">Mô tả lỗi *</label>
                     <textarea id="failureDescription" th:field="*{failureDescription}" class="form-control" rows="4"

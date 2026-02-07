@@ -50,4 +50,28 @@ public class VehicleRestController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/{id}/parts")
+    @Operation(summary = "Get parts for a vehicle")
+    public ResponseEntity<java.util.List<com.oem.evwarranty.model.dto.VehiclePartDTO>> getVehicleParts(
+            @PathVariable Long id) {
+        if (id == null)
+            return ResponseEntity.badRequest().build();
+        java.util.List<com.oem.evwarranty.model.VehiclePart> parts = vehicleService.findPartsByVehicleId(id);
+
+        java.util.List<com.oem.evwarranty.model.dto.VehiclePartDTO> dtos = parts.stream().map(part -> {
+            com.oem.evwarranty.model.dto.VehiclePartDTO dto = new com.oem.evwarranty.model.dto.VehiclePartDTO();
+            dto.setId(part.getId());
+            dto.setSerialNumber(part.getSerialNumber());
+            dto.setWarrantyEndDate(part.getWarrantyEndDate());
+            dto.setStatus(part.getStatus().name());
+            if (part.getPart() != null) {
+                dto.setPartName(part.getPart().getName());
+                dto.setPartCode(part.getPart().getPartNumber());
+            }
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
+    }
 }

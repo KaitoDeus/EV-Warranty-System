@@ -18,7 +18,7 @@ public interface VehiclePartRepository extends JpaRepository<VehiclePart, Long> 
 
     boolean existsBySerialNumber(String serialNumber);
 
-    @Query("SELECT vp FROM VehiclePart vp WHERE vp.vehicle.id = :vehicleId")
+    @Query("SELECT vp FROM VehiclePart vp JOIN FETCH vp.part WHERE vp.vehicle.id = :vehicleId")
     List<VehiclePart> findByVehicleId(@Param("vehicleId") Long vehicleId);
 
     @Query("SELECT vp FROM VehiclePart vp WHERE vp.part.id = :partId")

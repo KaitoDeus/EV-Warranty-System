@@ -22,10 +22,13 @@ public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
     private final CustomerRepository customerRepository;
+    private final com.oem.evwarranty.repository.VehiclePartRepository vehiclePartRepository;
 
-    public VehicleService(VehicleRepository vehicleRepository, CustomerRepository customerRepository) {
+    public VehicleService(VehicleRepository vehicleRepository, CustomerRepository customerRepository,
+            com.oem.evwarranty.repository.VehiclePartRepository vehiclePartRepository) {
         this.vehicleRepository = vehicleRepository;
         this.customerRepository = customerRepository;
+        this.vehiclePartRepository = vehiclePartRepository;
     }
 
     public List<Vehicle> findAll() {
@@ -57,6 +60,10 @@ public class VehicleService {
 
     public List<Vehicle> findVehiclesUnderWarranty() {
         return vehicleRepository.findVehiclesUnderWarranty();
+    }
+
+    public List<com.oem.evwarranty.model.VehiclePart> findPartsByVehicleId(Long vehicleId) {
+        return vehiclePartRepository.findByVehicleId(vehicleId);
     }
 
     public Vehicle createVehicle(Vehicle vehicle, Long customerId) {

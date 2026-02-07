@@ -148,4 +148,13 @@ public class AdminController {
         }
         return "redirect:/admin/users/" + id;
     }
+
+    @PostMapping("/users/{id}/delete")
+    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
+        userService.deleteUser(id);
+        redirectAttributes.addFlashAttribute("success", "User deleted successfully");
+        return "redirect:/admin/users";
+    }
 }
